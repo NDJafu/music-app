@@ -1,15 +1,20 @@
-const { isTokenValid } = require("../Utils/jwt");
+const jwt = require("jsonwebtoken");
 
-const authenticateUser = async (req, res, next) => {
-  const token = req.signedCookies.token;
+const authenticateUser = (req, res, next) => {
+  const headers = req.headers["authorization"];
+
+  if (!headers) return res.sendStatus(401);
+
+  const token = headers.split(" ")[1];
+
   if (!token) {
-    throw Error("Authentication Invalid");
+    return res.sendStatus(401);
   }
-
-  const { email, userId, role } = await isTokenValid({ token });
-  req.user = { email, userId, role };
-
-  next();
+  jwt.verify(token, process.env.JWT_ACCESS_SECRET, (err, decoded) => {
+    if (err) return res.sendStatus(403);
+    req.user = decoded;
+    next();
+  });
 };
 
-module.exports = { authenticateUser };
+module.exports = authenticateUser;

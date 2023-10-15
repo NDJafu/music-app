@@ -22,7 +22,7 @@ const historyRouter = require("./Route/historyRoute");
 const playlistRouter = require("./Route/playlistRoute");
 
 app.use(express.json());
-app.use(cookieParser(process.env.JWT_SECRET));
+app.use(cookieParser());
 
 app.use(
   fileUpload({
@@ -45,6 +45,7 @@ const startApp = async () => {
   //TODO: Viết console log kết nối DB thành công cho mongoose
   try {
     await connectDB(process.env.MONGO_URI);
+    console.log("connected to database");
     app.listen(port, () => {
       console.log(`Server is listening in ${port}...`);
     });

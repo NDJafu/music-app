@@ -47,8 +47,8 @@ const addLikedMusicToAll = async (req, res) => {
 };
 
 const showCurrentUser = async (req, res) => {
-  const user = await User.findOne({ _id: req.user.userId });
-  res.status(201).json({ user });
+  console.log("fetched!");
+  res.status(200).json({ user: req.user });
 };
 
 const updateUserById = async (req, res) => {

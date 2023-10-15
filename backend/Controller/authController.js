@@ -1,5 +1,6 @@
 const User = require("../Model/User");
 const Playlist = require("../Model/Playlist");
+const jwt = require("jsonwebtoken");
 
 const { attachTokenToCookies } = require("../Utils/jwt");
 
@@ -9,13 +10,13 @@ const register = async (req, res) => {
   if (!email || !username || !birthday || !gender || !password) {
     return res
       .status(500)
-      .json({ error: "You need to field all the information" });
+      .json({ error: "You need to field all the information!" });
   }
 
   const emailAlreadyExist = await User.findOne({ email });
 
   if (emailAlreadyExist) {
-    return res.status(500).json({ error: "User is already exist" });
+    return res.status(500).json({ error: "User already exist!" });
   }
 
   const isFirstAccount = (await User.countDocuments({})) === 0;
@@ -29,23 +30,16 @@ const register = async (req, res) => {
     role: isFirstAccount ? "admin" : "user",
   });
 
-  // create Liked Music playlist when user is created
   const defaultLikedMusicPlaylist = await Playlist.create({
     userId: user._id,
     title: "Liked Music",
   });
 
-  //set user liked music equal playlist id
-  user.likedMusic = likedMusicPlaylist._id;
+  user.likedMusic = defaultLikedMusicPlaylist._id;
 
   user.save();
 
-  //create payload
-  const tokenUser = { email: user.email, userId: user._id, role: user.role };
-  //create jwt token and attach it to cookie
-  attachTokenToCookies({ res, payload: tokenUser });
-
-  res.status(201).json({ message: "User is created", user: tokenUser });
+  res.status(201).json({ message: "User created!" });
 };
 
 const login = async (req, res) => {
@@ -58,6 +52,7 @@ const login = async (req, res) => {
   }
 
   const user = await User.findOne({ email });
+
   if (!user) {
     return res.status(500).json({ error: "User is not exist" });
   }
@@ -67,24 +62,77 @@ const login = async (req, res) => {
     return res.status(500).json({ error: "Password is invalid" });
   }
 
-  const tokenUser = { email: user.email, userId: user._id, role: user.role };
+  const foundUser = {
+    id: user._id,
+    email: user.email,
+    role: user.role,
+    avatar: user.image,
+  };
 
-  //create jwt token and attach it to cookie
-  attachTokenToCookies({ res, payload: tokenUser });
+  const accessToken = jwt.sign(foundUser, process.env.JWT_ACCESS_SECRET, {
+    expiresIn: "30s",
+  });
 
-  res.status(200).json({ message: "Success login", user: tokenUser });
+  const refreshToken = jwt.sign(
+    { id: user._id },
+    process.env.JWT_REFRESH_SECRET,
+    {
+      expiresIn: process.env.JWT_EXPIRES_IN,
+    }
+  );
+
+  res.cookie("token", refreshToken, {
+    httpOnly: true,
+    maxAge: 24 * 60 * 60 * 1000,
+  });
+
+  res.status(200).json({ message: "Login successfully!", accessToken });
+};
+
+const refresh = async (req, res) => {
+  const cookies = req.cookies;
+
+  if (!cookies?.token) return res.sendStatus(401);
+
+  const refreshToken = cookies.token;
+
+  jwt.verify(
+    refreshToken,
+    process.env.JWT_REFRESH_SECRET,
+    async (err, decoded) => {
+      if (err) return res.sendStatus(403);
+
+      const user = await User.findOne({ _id: decoded.id });
+
+      if (!user) return res.sendStatus(401);
+
+      const accessToken = jwt.sign(
+        {
+          id: user._id,
+          email: user.email,
+          role: user.role,
+          avatar: user.image,
+        },
+        process.env.JWT_ACCESS_SECRET,
+        { expiresIn: "30s" }
+      );
+      res.status(200).json({ accessToken });
+    }
+  );
 };
 
 const logout = async (req, res) => {
-  res.cookie("token", "logout", {
-    httpOnly: true,
-    expires: new Date(Date.now() + 5000),
-  });
-  res.status(200).json({ message: "Logout success" });
+  const cookies = req.cookies;
+
+  if (!cookies?.token) return res.sendStatus(204);
+
+  res.clearCookie("token", { httpOnly: true });
+  res.status(200).json({ message: "logout success!" });
 };
 
 module.exports = {
   register,
   login,
+  refresh,
   logout,
 };

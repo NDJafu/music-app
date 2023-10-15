@@ -6,17 +6,17 @@ import PlaylistItemSkeleton from "./PlaylistItemSkeleton"
 
 const PlaylistList = () => {
   const dispatch = useAppDispatch()
-  const currentUserId = useAppSelector((state) => state.auth.currentUser?.id)
+  const currentUser = useAppSelector((state) => state.auth.currentUser)
   const currentUserPlaylists = useAppSelector(
     (state) => state.playlist.currentUserPlaylist,
   )
   const loading = useAppSelector((state) => state.playlist.loading)
 
   useEffect(() => {
-    if (!currentUserId) return
+    if (!currentUser) return
 
-    dispatch(getCurrentUserPlaylist(currentUserId))
-  }, [currentUserId])
+    dispatch(getCurrentUserPlaylist(currentUser.id))
+  }, [currentUser])
 
   const ifLikedMusicIsEmpty =
     currentUserPlaylists.find((playlist) => playlist.title == "Liked Music")
@@ -26,7 +26,7 @@ const PlaylistList = () => {
     currentUserPlaylists.filter((playlist) => playlist.title != "Liked Music")
       .length == 0
 
-  if (!currentUserId || (ifLikedMusicIsEmpty && onlyPlaylistIsLikedMusic))
+  if (!currentUser || (ifLikedMusicIsEmpty && onlyPlaylistIsLikedMusic))
     return (
       <div className="w-full bg-jarcata h-fit rounded px-4 py-3 flex flex-col gap-4">
         <h3 className="text-base">Create your first playlist</h3>

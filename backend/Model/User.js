@@ -63,6 +63,9 @@ const UserSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: Playlist,
   },
+  refreshToken: {
+    type: String,
+  },
 });
 
 UserSchema.pre("save", async function () {

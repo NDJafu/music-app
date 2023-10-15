@@ -15,19 +15,18 @@ const initialState: AuthState = {
   error: null,
 }
 
+export const refreshAccessToken = createAsyncThunk("auth/refresh", async () => {
+  const response = await api.get("/auth/refresh")
+  return response.data.accessToken
+})
+
 export const getCurrentUser = createAsyncThunk(
   "auth/fetchCurrentUser",
   async () => {
     try {
       const response = await api.get("/user/currentUser")
-      const user = response.data.user
-      const transformedData: CurrentUser = {
-        id: user._id,
-        email: user.email,
-        image: user.image,
-        role: "",
-      }
-      return transformedData
+      const user: CurrentUser = response.data.user
+      return user
     } catch (error: any) {
       throw Error(`Error: ${error.response.data.message}`)
     }
@@ -58,7 +57,7 @@ export const registerAsync =
         setCurrentUserSuccess({
           id: id,
           email: user.email,
-          image: user.image,
+          avatar: user.image,
           role: "",
         }),
       )
@@ -84,7 +83,7 @@ export const loginAsync =
         setCurrentUserSuccess({
           id: id,
           email: user.email,
-          image: user.image,
+          avatar: user.image,
           role: "",
         }),
       )
@@ -151,11 +150,14 @@ const authSlice = createSlice({
       state.isLoggedIn = "loading"
       state.error = null
     })
-    builder.addCase(getCurrentUser.fulfilled, (state, action) => {
-      state.isLoggedIn = "true"
-      state.error = null
-      state.currentUser = action.payload
-    })
+    builder.addCase(
+      getCurrentUser.fulfilled,
+      (state, action: PayloadAction<CurrentUser>) => {
+        state.isLoggedIn = "true"
+        state.error = null
+        state.currentUser = action.payload
+      },
+    )
     builder.addCase(getCurrentUser.rejected, (state, action) => {
       state.isLoggedIn = "false"
       state.error = action.payload as string

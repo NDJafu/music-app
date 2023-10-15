@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import Sidebar from "../components/Sidebar"
 import { Outlet, useNavigate } from "react-router-dom"
 import HistoryNavigation from "../components/Buttons/HistoryNavigation"
@@ -13,7 +13,10 @@ import { ToastContainer } from "react-toastify"
 const MainLayout = () => {
   const navigate = useNavigate()
   const dispatch = useAppDispatch()
-  const isLoggedIn = useAppSelector((state) => state.auth.isLoggedIn)
+  const token = useAppSelector((state) => state.auth.token)
+  const user = useAppSelector((state) => state.auth.currentUser)
+
+  console.log(user)
 
   const handleLogOut = () => {
     dispatch(logoutAsync())
@@ -40,13 +43,11 @@ const MainLayout = () => {
             ></div>
             <div className="absolute py-7 inset-x-0 px-10 flex justify-between">
               <HistoryNavigation />
-              {isLoggedIn === "loading" && ""}
-              {isLoggedIn === "false" && (
+              {!user ? (
                 <Primary onClick={() => navigate("/account/login")}>
                   <span className="px-4">Đăng nhập</span>
                 </Primary>
-              )}
-              {isLoggedIn === "true" && (
+              ) : (
                 <div className="flex gap-2">
                   <Upload />
                   <ProfileDropdown logOut={handleLogOut} />

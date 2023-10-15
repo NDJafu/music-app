@@ -7,10 +7,10 @@ export interface User {
   gender: string
   role: string
   follower: number
-  image: string
+  avatar: string
 }
 
-export type CurrentUser = Pick<User, "id" | "email" | "image" | "role">
+export type CurrentUser = Pick<User, "id" | "email" | "avatar" | "role">
 
 export interface Track {
   id: string

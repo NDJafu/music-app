@@ -10,14 +10,9 @@ type Props = {
 
 const ProfileDropdown = ({ logOut }: Props) => {
   const user = useAppSelector((state) => state.auth.currentUser)
+
   const [showProfileMenu, setShowProfileMenu] = useState(false)
   const profileRef: React.RefObject<HTMLDivElement> = useRef(null)
-
-  const [avatar, setAvatar] = useState<string | null>(null)
-
-  useEffect(() => {
-    setAvatar(user?.image || null)
-  }, [user])
 
   const handleClickOutside = (event: MouseEvent) => {
     if (
@@ -35,17 +30,21 @@ const ProfileDropdown = ({ logOut }: Props) => {
     }
   }, [])
 
+  console.log(user?.avatar)
+
   return (
     <div ref={profileRef} className="h-8 relative">
       <Primary onClick={() => setShowProfileMenu(!showProfileMenu)}>
         <div className="flex items-center p-1 gap-1 h-full">
-          {!avatar ? (
+          {!user?.avatar ? (
             <div className="bg-neutral-700 rounded-full p-1">
               <BsPerson size={16} />
             </div>
           ) : (
             <img
-              src={avatar}
+              src={user.avatar}
+              width={24}
+              height={24}
               alt="avatar"
               className="w-6 h-6 rounded-full object-cover"
             />

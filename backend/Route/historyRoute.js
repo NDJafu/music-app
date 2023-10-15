@@ -9,7 +9,7 @@ const {
   deleteAllHistoryByUserId,
 } = require("../Controller/historyController");
 
-const { authenticateUser } = require("../Middleware/authentication");
+const authenticateUser = require("../Middleware/authentication");
 
 router
   .route("/")

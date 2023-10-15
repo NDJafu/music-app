@@ -11,7 +11,7 @@ const {
   addLikedMusicToAll,
 } = require("../Controller/userController");
 
-const { authenticateUser } = require("../Middleware/authentication");
+const authenticateUser = require("../Middleware/authentication");
 
 router.route("/").get(authenticateUser, getAllUsers);
 

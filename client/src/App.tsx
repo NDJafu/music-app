@@ -20,16 +20,25 @@ import ChangePassword from "./pages/ChangePassword"
 import TrackPage from "./pages/TrackPage"
 import PlaylistPage from "./pages/PlaylistPage"
 import QueuePage from "./pages/QueuePage"
+import { useRefreshMutation } from "./features/auth/authSliceV2"
 
 const App = () => {
-  const dispatch = useAppDispatch()
-  const isLoggedIn = useAppSelector((state) => state.auth.isLoggedIn)
+  const token = useAppSelector((state) => state.auth.token)
+
+  const [refresh, { isUninitialized, isLoading, isSuccess, isError, error }] =
+    useRefreshMutation()
 
   useEffect(() => {
-    if (isLoggedIn === "loading") {
-      dispatch(getCurrentUser())
+    const verifyRefreshToken = async () => {
+      try {
+        await refresh()
+      } catch (err) {
+        console.log(err)
+      }
     }
-  }, [isLoggedIn])
+
+    if (!token) verifyRefreshToken()
+  }, [])
 
   return (
     <Router>
