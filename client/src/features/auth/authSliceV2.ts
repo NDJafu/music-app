@@ -23,8 +23,20 @@ export const authApiSlice = apiSlice.injectEndpoints({
         method: "POST",
         body: { ...credentials },
       }),
+      async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+        try {
+          const { data } = await queryFulfilled
+          const { accessToken } = data as unknown as { accessToken: string }
+
+          const user = jwtDecode<CurrentUser>(accessToken)
+
+          dispatch(setCredentials({ user, accessToken }))
+        } catch (err) {
+          console.log(err)
+        }
+      },
     }),
-    logout: builder.mutation({
+    logout: builder.mutation<void, void>({
       query: () => ({
         url: "/auth/logout",
         method: "POST",
@@ -40,7 +52,7 @@ export const authApiSlice = apiSlice.injectEndpoints({
         }
       },
     }),
-    refresh: builder.mutation<void, void>({
+    refresh: builder.mutation<{ accessToken: string }, void>({
       query: () => ({
         url: "/auth/refresh",
         method: "GET",
@@ -48,7 +60,7 @@ export const authApiSlice = apiSlice.injectEndpoints({
       async onQueryStarted(arg, { dispatch, queryFulfilled }) {
         try {
           const { data } = await queryFulfilled
-          const { accessToken } = data as unknown as { accessToken: string }
+          const { accessToken } = data
 
           const user = jwtDecode<CurrentUser>(accessToken)
 

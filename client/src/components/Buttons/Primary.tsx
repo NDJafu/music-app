@@ -2,7 +2,7 @@ import React from "react"
 
 type Props = {
   children?: React.ReactNode
-  onClick: () => void
+  onClick?: () => void
 }
 
 const Primary = ({ children, onClick }: Props) => {

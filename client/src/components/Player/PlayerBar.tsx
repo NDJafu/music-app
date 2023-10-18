@@ -98,7 +98,7 @@ const PlayerBar = () => {
     )
 
   return (
-    <div className="bg-black text-linkwater w-full py-4 flex items-center justify-between">
+    <div className="bg-black text-linkwater w-full absolute bottom-0 py-4 flex items-center justify-between">
       <ReactPlayer
         ref={playerRef}
         url={currentSong?.audio}

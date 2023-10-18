@@ -7,7 +7,7 @@ import PlaylistDropdown from "./Playlist/PlaylistDropdown"
 
 const Sidebar = () => {
   return (
-    <aside className="sticky top-0 min-w-fit bg-black p-2 text-linkwater">
+    <aside className="col-span-1 min-w-fit bg-black p-2 text-linkwater">
       <Link to="/">
         <img src={BrandLogo} alt="brand" />
       </Link>

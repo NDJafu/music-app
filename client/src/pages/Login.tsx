@@ -42,10 +42,8 @@ const Login = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     try {
-      const response = await login({ ...loginForm }).unwrap()
-      dispatch(setCredentials({ ...response }))
+      await login({ ...loginForm })
       setLoginForm({ email: "", password: "" })
-
       navigate("/")
     } catch (err: FetchBaseQueryError | any) {
       if (!err.orginalStatus) {

@@ -30,8 +30,6 @@ const ProfileDropdown = ({ logOut }: Props) => {
     }
   }, [])
 
-  console.log(user?.avatar)
-
   return (
     <div ref={profileRef} className="h-8 relative">
       <Primary onClick={() => setShowProfileMenu(!showProfileMenu)}>
