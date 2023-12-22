@@ -2,8 +2,7 @@ const User = require("../Model/User");
 const Playlist = require("../Model/Playlist");
 const jwt = require("jsonwebtoken");
 
-const { attachTokenToCookies } = require("../Utils/jwt");
-
+//Register
 const register = async (req, res) => {
   const { email, username, birthday, password, gender } = req.body;
 
@@ -42,6 +41,7 @@ const register = async (req, res) => {
   res.status(201).json({ message: "User created!" });
 };
 
+//Login
 const login = async (req, res) => {
   const { email, password } = req.body;
 
@@ -54,10 +54,11 @@ const login = async (req, res) => {
   const user = await User.findOne({ email });
 
   if (!user) {
-    return res.status(500).json({ error: "User is not exist" });
+    return res.status(500).json({ error: "User does not exist" });
   }
 
   const isPasswordCorrect = await user.comparePassword(password);
+
   if (!isPasswordCorrect) {
     return res.status(500).json({ error: "Password is invalid" });
   }
@@ -70,7 +71,7 @@ const login = async (req, res) => {
   };
 
   const accessToken = jwt.sign(foundUser, process.env.JWT_ACCESS_SECRET, {
-    expiresIn: "30s",
+    expiresIn: "5m",
   });
 
   const refreshToken = jwt.sign(
@@ -89,6 +90,7 @@ const login = async (req, res) => {
   res.status(200).json({ message: "Login successfully!", accessToken });
 };
 
+//Refresh token
 const refresh = async (req, res) => {
   const cookies = req.cookies;
 
@@ -114,7 +116,7 @@ const refresh = async (req, res) => {
           avatar: user.image,
         },
         process.env.JWT_ACCESS_SECRET,
-        { expiresIn: "30s" }
+        { expiresIn: "5m" }
       );
       res.status(200).json({ accessToken });
     }

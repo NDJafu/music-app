@@ -4,7 +4,7 @@ import {
   createApi,
   fetchBaseQuery,
 } from "@reduxjs/toolkit/query/react"
-import { setCredentials, logOut } from "../features/auth/authSliceV2"
+import { setCredentials, logout } from "../features/auth/authSlice"
 import { RootState } from "./store"
 
 const baseQuery = fetchBaseQuery({
@@ -24,11 +24,7 @@ const baseQueryWithReauth: BaseQueryFn = async (args, api, extraOptions) => {
   let result = await baseQuery(args, api, extraOptions)
 
   if (result?.error) {
-    console.log("sending refresh token")
-
     const refreshResult = await baseQuery("/auth/refresh", api, extraOptions)
-
-    console.log(refreshResult)
 
     if (refreshResult?.data) {
       const state = api.getState() as RootState
@@ -38,7 +34,7 @@ const baseQueryWithReauth: BaseQueryFn = async (args, api, extraOptions) => {
 
       result = await baseQuery(args, api, extraOptions)
     } else {
-      api.dispatch(logOut())
+      api.dispatch(logout())
     }
   }
   return result

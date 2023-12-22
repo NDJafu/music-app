@@ -1,12 +1,10 @@
 import React, { useState, useRef, useEffect } from "react"
-import { loginAsync } from "../features/auth/authSlice"
-import { Link, Navigate, useNavigate } from "react-router-dom"
-import { useAppDispatch, useAppSelector } from "../app/hooks"
-import { setCredentials, useLoginMutation } from "../features/auth/authSliceV2"
-import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query"
+import { Link, useNavigate } from "react-router-dom"
+import { useAppSelector } from "../app/hooks"
+import { useLoginMutation } from "../features/auth/authApiSlice"
+import { toast } from "react-toastify"
 
 const Login = () => {
-  const dispatch = useAppDispatch()
   const navigate = useNavigate()
   const [login, { isLoading }] = useLoginMutation()
   const user = useAppSelector((state) => state.auth.currentUser)
@@ -16,85 +14,61 @@ const Login = () => {
     userRef.current?.focus()
   }, [])
 
-  const [loginForm, setLoginForm] = useState({
+  const initialState = {
     email: "",
     password: "",
-  })
-
-  const [errMessage, setErrMessage] = useState<string | null>()
-
-  useEffect(() => {
-    setErrMessage(null)
-  }, [loginForm])
-
-  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const input = e.target
-    switch (input.name) {
-      case "email":
-        setLoginForm((prev) => ({ ...prev, email: input.value }))
-        return
-      case "password":
-        setLoginForm((prev) => ({ ...prev, password: input.value }))
-        return
-    }
   }
+
+  const [loginForm, setLoginForm] = useState(initialState)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    try {
-      await login({ ...loginForm })
-      setLoginForm({ email: "", password: "" })
-      navigate("/")
-    } catch (err: FetchBaseQueryError | any) {
-      if (!err.orginalStatus) {
-        setErrMessage("No server response.")
-      } else if (err.orginalStatus === 400) {
-        setErrMessage("Missing field.")
-      } else if (err.orginalStatus === 401) {
-        setErrMessage("Unauthorized.")
-      } else {
-        setErrMessage("Login failed, try again later.")
-      }
-    }
-  }
-
-  if (user) {
-    return <Navigate to="/" />
+    await login({ ...loginForm })
+      .unwrap()
+      .then(() => {
+        navigate("/")
+      })
+      .catch((e) => toast.error(e.data.error))
+      .finally(() => setLoginForm(initialState))
   }
 
   return (
-    <div className="mx-auto w-1/3 bg-dark h-screen mt-10 rounded-xl text-linkwater pt-12 box-border">
+    <div className="mx-auto w-1/3 bg-black h-screen mt-10 rounded-xl text-linkwater pt-12 box-border">
       <h1 className="text-center font-bold text-4xl">Login to Unicord</h1>
-      <form className="mx-auto px-5 pt-5 w-1/2" onSubmit={handleSubmit}>
-        <label htmlFor="name">Email</label>
-        <input
-          id="email"
-          name="email"
-          type="email"
-          ref={userRef}
-          className="bg-dark-500 border border-linkwater rounded-md w-full p-2.5 mb-5"
-          value={loginForm.email}
-          onChange={handleChange}
-        />
-        <label htmlFor="password">Password</label>
-        <input
-          id="password"
-          name="password"
-          type="password"
-          className="bg-dark-500 border border-linkwater rounded-md w-full p-2.5"
-          value={loginForm.password}
-          onChange={handleChange}
-        />
-        {errMessage && (
-          <div className="bg-red-500 text-linkwater p-3 mt-5 rounded-lg">
-            {errMessage}
-          </div>
-        )}
-        <input
-          type="submit"
-          value="Log In"
-          className="w-full bg-jarcata mt-5 py-3 rounded-full"
-        />
+      <form
+        className="mx-auto px-5 pt-5 w-1/2 flex flex-col gap-5 font-semibold"
+        onSubmit={handleSubmit}
+      >
+        <label htmlFor="name">
+          Email
+          <input
+            id="email"
+            name="email"
+            type="email"
+            ref={userRef}
+            className="bg-dark-500 border border-linkwater/20 rounded-md w-full p-2.5 outline-none"
+            value={loginForm.email}
+            onChange={(e) =>
+              setLoginForm((prev) => ({ ...prev, email: e.target.value }))
+            }
+          />
+        </label>
+        <label htmlFor="password">
+          Password
+          <input
+            id="password"
+            name="password"
+            type="password"
+            className="bg-dark-500 border border-linkwater/20 rounded-md w-full p-2.5 outline-none"
+            value={loginForm.password}
+            onChange={(e) =>
+              setLoginForm((prev) => ({ ...prev, password: e.target.value }))
+            }
+          />
+        </label>
+        <button className="w-full bg-jarcata py-3 rounded-full" type="submit">
+          Login
+        </button>
       </form>
       <div className="w-fit font-semibold text-center my-5 flex flex-col gap-5 mx-auto">
         <Link to={""} className="underline">

@@ -1,5 +1,5 @@
 import { configureStore, ThunkAction, Action } from "@reduxjs/toolkit"
-import authReducer from "../features/auth/authSliceV2"
+import authReducer from "../features/auth/authSlice"
 import userReducer from "../features/user/userSlice"
 import playerReducer from "../features/player/playerSlice"
 import trackReducer from "../features/track/trackSlice"
