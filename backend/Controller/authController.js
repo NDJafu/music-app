@@ -94,7 +94,7 @@ const login = async (req, res) => {
 const refresh = async (req, res) => {
   const cookies = req.cookies;
 
-  if (!cookies?.token) return res.sendStatus(401);
+  if (!cookies?.token) return res.status(401).json("Unauthorized");
 
   const refreshToken = cookies.token;
 
