@@ -30,7 +30,7 @@ export const fetchUserById = createAsyncThunk(
         birthday: user.birthday,
         gender: user.gender,
         follower: user.follower,
-        image: user.image,
+        avatar: user.image,
         password: "",
         role: "",
       }
@@ -54,7 +54,7 @@ export const updateUserById = createAsyncThunk(
         birthday: user.birthday,
         gender: user.gender,
         follower: user.follower,
-        image: user.image,
+        avatar: user.image,
         password: "",
         role: "",
       }

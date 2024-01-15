@@ -4,7 +4,6 @@ import { useParams } from "react-router-dom"
 import { useAppSelector, useAppDispatch } from "../../app/hooks"
 import { fetchUserById, updateUserById } from "../../features/user/userSlice"
 import { getColor } from "../../utils/colorthief"
-import { updateCurrentUser } from "../../features/auth/authSlice"
 import { uploadFile } from "../../utils/uploadfile"
 
 type EditForm = {
@@ -54,23 +53,21 @@ const ProfileBanner = () => {
     }
   }
 
-  const setProfileBackgroundColor = (image: string) => {
-    getColor(image).then((color) => {
-      const result = color as number[]
-      setBgColor(`${result[0]},${result[1]},${result[2]}`)
-    })
+  const setProfileBackgroundColor = async (image: string) => {
+    const color = await getColor(image)
+    setBgColor(`${color[0]},${color[1]},${color[2]}`)
   }
 
   useEffect(() => {
     const isSameUser = user?.id == id
     if (isSameUser) {
-      setProfileBackgroundColor(user?.image as string)
+      setProfileBackgroundColor(user?.avatar as string)
       return
     }
     dispatch(fetchUserById(id as string))
       .unwrap()
       .then((user) => {
-        setProfileBackgroundColor(user.image)
+        setProfileBackgroundColor(user.avatar)
       })
   }, [id])
 
@@ -87,7 +84,7 @@ const ProfileBanner = () => {
   const submitUpdateProfile = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    let avatarURL = user?.image ?? null
+    let avatarURL = user?.avatar ?? null
 
     if (editProfileForm.image) {
       const response = await uploadFile(editProfileForm.image)
@@ -98,15 +95,10 @@ const ProfileBanner = () => {
       updateUserById({
         id: user?.id,
         username: editProfileForm.name,
-        image: avatarURL as string,
+        avatar: avatarURL as string,
       }),
     )
     setProfileBackgroundColor(avatarURL as string)
-    dispatch(
-      updateCurrentUser({
-        image: avatarURL as string,
-      }),
-    )
     console.log(currentUser)
   }
 
@@ -124,7 +116,7 @@ const ProfileBanner = () => {
             <div className="absolute flex bottom-9 items-center gap-4">
               <div className="relative group">
                 <img
-                  src={user?.image ?? ""}
+                  src={user?.avatar ?? ""}
                   alt="avatar"
                   className="w-60 h-60 rounded-full object-cover shadow-lg shadow-black/50"
                   loading="lazy"
@@ -164,7 +156,7 @@ const ProfileBanner = () => {
               <div className="flex py-6 items-center gap-4">
                 <div className="relative group">
                   <img
-                    src={preview ?? user?.image}
+                    src={preview ?? user?.avatar}
                     alt="preview"
                     className="w-52 h-52 rounded-full object-cover shadow-lg shadow-black/50"
                   />

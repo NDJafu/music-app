@@ -13,22 +13,32 @@ const ProgressBar = (props: Props) => {
 
   const currentPercentage = currentTime * 100
 
-  const handleTimeDrag = (e: any) => {
+  const handleTimeDrag = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     const timeline = document.querySelector(".bar__progress") as HTMLElement
-    setHover(true)
-    let isScrubbing = false
-    function toggleScrubbing(e: any) {
-      const rect = timeline.getBoundingClientRect()
-      const percent =
-        Math.min(Math.max(0, e.x - rect.x), rect.width) / rect.width
+    setHover(true) //Shows the coloured timeline
+    let isScrubbing = false //Check if user is pulling the timeline around
+
+    function toggleScrubbing(e: MouseEvent) {
       isScrubbing = (e.buttons & 1) === 1
+      const rect = timeline.getBoundingClientRect()
+      //If mouse horizontal position - timeline bounding x cordinate is negative, it returns zero
+      const mousePosition = Math.max(0, e.x - rect.x)
+      const ifCursorStillOnTimeLine =
+        e.x - rect.x >= 0 &&
+        e.x - rect.x <= rect.width &&
+        e.y - rect.y >= 0 &&
+        e.y - rect.y <= rect.height
+      const percent = Math.min(mousePosition, rect.width) / rect.width
+
       if (isScrubbing) {
         handleTimeLineUpdate(e)
       } else {
         onMouseUpSeek(percent - 0.00001)
+        if (!ifCursorStillOnTimeLine) setHover(false)
       }
     }
-    const handleTimeLineUpdate = (e: any) => {
+
+    function handleTimeLineUpdate(e: MouseEvent) {
       const rect = timeline.getBoundingClientRect()
       const percent =
         Math.min(Math.max(0, e.x - rect.x), rect.width) / rect.width
@@ -38,16 +48,15 @@ const ProgressBar = (props: Props) => {
       }
       onTimeUpdate(percent)
     }
+
     timeline.addEventListener("mouseleave", () => setHover(false))
     timeline.addEventListener("mousedown", toggleScrubbing)
     document.addEventListener("mouseup", (e) => {
       if (isScrubbing) toggleScrubbing(e)
-      else setHover(false)
     })
     document.addEventListener("mousemove", (e) => {
-      if (isScrubbing) {
-        handleTimeLineUpdate(e)
-      }
+      if (!isScrubbing) return
+      handleTimeLineUpdate(e)
     })
   }
 
@@ -63,10 +72,10 @@ const ProgressBar = (props: Props) => {
         onMouseOver={handleTimeDrag}
       >
         <span
-          className="bar__progress__knob relative bg-linkwater h-3 w-3 -top-[2.5px] rounded-full hidden"
+          className="bar__progress__knob relative bg-linkwater h-3 w-3 -top-[2.5px] -ml-1.5 rounded-full block"
           style={{
-            left: `${Math.max(0, currentPercentage - 2)}%`,
-            display: `${hover ? "block" : "none"}`,
+            left: `${Math.max(0, currentPercentage)}%`,
+            opacity: hover ? 1 : 0,
           }}
         />
       </div>

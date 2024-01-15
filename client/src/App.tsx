@@ -1,6 +1,5 @@
 import { useEffect } from "react"
-import { useAppDispatch, useAppSelector } from "./app/hooks"
-import { getCurrentUser } from "./features/auth/authSlice"
+import { useAppSelector } from "./app/hooks"
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
 import "react-toastify/dist/ReactToastify.css"
 
@@ -20,7 +19,7 @@ import ChangePassword from "./pages/ChangePassword"
 import TrackPage from "./pages/TrackPage"
 import PlaylistPage from "./pages/PlaylistPage"
 import QueuePage from "./pages/QueuePage"
-import { useRefreshMutation } from "./features/auth/authSliceV2"
+import { useRefreshMutation } from "./features/auth/authApiSlice"
 
 const App = () => {
   const token = useAppSelector((state) => state.auth.token)

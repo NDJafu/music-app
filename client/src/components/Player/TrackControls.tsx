@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from "react"
+import { useMemo, useState } from "react"
 import { Duration } from "./Durations"
 import {
   BsPauseFill,
@@ -95,12 +95,8 @@ const TrackControls = ({
         <ProgressBar
           currentTime={played}
           duration={duration}
-          onTimeUpdate={function (time: number): void {
-            handleSeekChange(time)
-          }}
-          onMouseUpSeek={function (time: number): void {
-            handleSeekMouseUp(time)
-          }}
+          onTimeUpdate={(time) => handleSeekChange(time)}
+          onMouseUpSeek={(time) => handleSeekMouseUp(time)}
         />
         <Duration seconds={duration} />
       </div>

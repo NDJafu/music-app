@@ -6,8 +6,7 @@ import ProfileDropdown from "../components/Profile/ProfileDropdown"
 import { useAppSelector } from "../app/hooks"
 import PlayerBar from "../components/Player/PlayerBar"
 import Upload from "../components/Buttons/Upload"
-import { ToastContainer } from "react-toastify"
-import { useLogoutMutation } from "../features/auth/authSliceV2"
+import { useLogoutMutation } from "../features/auth/authApiSlice"
 
 const MainLayout = () => {
   const [logout, { isLoading }] = useLogoutMutation()
@@ -57,18 +56,6 @@ const MainLayout = () => {
         </div>
       </div>
       <PlayerBar />
-      <ToastContainer
-        position="bottom-right"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss={false}
-        draggable={false}
-        pauseOnHover={false}
-        theme="dark"
-      />
     </>
   )
 }

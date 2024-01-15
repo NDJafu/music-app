@@ -1,7 +1,7 @@
 import ColorThief from "colorthief"
 
 export const getColor = (url: string) => {
-  return new Promise((resolve, reject) => {
+  return new Promise<number[]>((resolve, reject) => {
     if (!url) {
       reject()
     }

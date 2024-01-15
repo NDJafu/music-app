@@ -1,11 +1,21 @@
 import { logout, setCredentials } from "./authSlice"
-import { CurrentUser } from "../../app/types"
+import { CurrentUser, User } from "../../app/types"
 import { apiSlice } from "../../app/apiSlice"
 import jwtDecode from "jwt-decode"
 
 //RTK Query
 export const authApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
+    register: builder.mutation<
+      void,
+      Pick<User, "email" | "username" | "birthday" | "password" | "gender">
+    >({
+      query: (credentials) => ({
+        url: "/auth/register",
+        method: "POST",
+        body: { ...credentials },
+      }),
+    }),
     login: builder.mutation({
       query: (credentials) => ({
         url: "/auth/login",
@@ -46,7 +56,7 @@ export const authApiSlice = apiSlice.injectEndpoints({
         url: "/auth/refresh",
         method: "GET",
       }),
-      async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+      async onQueryStarted(_arg, { dispatch, queryFulfilled }) {
         try {
           const { data } = await queryFulfilled
           const { accessToken } = data
@@ -54,13 +64,15 @@ export const authApiSlice = apiSlice.injectEndpoints({
           const user = jwtDecode<CurrentUser>(accessToken)
 
           dispatch(setCredentials({ user, accessToken }))
-        } catch (err) {
-          console.log(err)
-        }
+        } catch (err) {}
       },
     }),
   }),
 })
 
-export const { useLoginMutation, useLogoutMutation, useRefreshMutation } =
-  authApiSlice
+export const {
+  useLoginMutation,
+  useLogoutMutation,
+  useRefreshMutation,
+  useRegisterMutation,
+} = authApiSlice

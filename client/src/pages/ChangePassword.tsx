@@ -1,7 +1,6 @@
 import React, { useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import { useAppDispatch } from "../app/hooks"
-import { updateUserPasswordAsync } from "../features/auth/authSlice"
 
 const ChangePassword = () => {
   const dispatch = useAppDispatch()
@@ -36,7 +35,6 @@ const ChangePassword = () => {
       return
     }
     if (newPassword === confirmPassword) {
-      dispatch(updateUserPasswordAsync(currentPassword, newPassword))
       navigate("../overview")
     } else setErrorMsg("*Please verify your password")
   }
