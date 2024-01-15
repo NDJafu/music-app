@@ -7,19 +7,19 @@ import { toast } from "react-toastify"
 const Login = () => {
   const navigate = useNavigate()
   const [login, { isLoading }] = useLoginMutation()
-  const user = useAppSelector((state) => state.auth.currentUser)
-
+  const currentUser = useAppSelector((state) => state.auth.currentUser)
   const userRef = useRef<HTMLInputElement>(null)
-  useEffect(() => {
-    userRef.current?.focus()
-  }, [])
-
   const initialState = {
     email: "",
     password: "",
   }
 
   const [loginForm, setLoginForm] = useState(initialState)
+
+  useEffect(() => {
+    userRef.current?.focus()
+    if (currentUser) navigate(-1)
+  }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
