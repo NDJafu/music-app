@@ -1,4 +1,3 @@
-import axios from "axios"
 import {
   FullPlaylist,
   IncompletePlaylist,
@@ -73,7 +72,7 @@ export const getCurrentUserPlaylist = createAsyncThunk(
       const playlistData = response.data.playlist
       const playlists: IncompletePlaylist[] = await Promise.all(
         playlistData.map(async (playlist: any) => {
-          const response = await axios.get(`/api/v1/user/${playlist.userId}`)
+          const response = await api.get(`/user/${playlist.userId}`)
           let creator: string = response.data.user.username
           var transformedPlaylist: IncompletePlaylist = {
             id: playlist._id,
@@ -98,7 +97,7 @@ export const createNewPlaylist = createAsyncThunk(
     try {
       const response = await api.post("/playlist/create", { title })
       const playlistData = response.data.playlist
-      const creator = await axios.get(`/api/v1/user/${playlistData.userId}`)
+      const creator = await api.get(`/user/${playlistData.userId}`)
       let creatorName: string = creator.data.user.username
       var transformedPlaylist: IncompletePlaylist = {
         id: playlistData._id,

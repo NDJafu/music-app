@@ -85,7 +85,7 @@ const PlayerBar = () => {
 
   if (!currentUser)
     return (
-      <div className="bg-jarcata-500 h-fit absolute bottom-2 inset-x-2 text-linkwater p-4 flex flex-col gap-2 rounded-lg">
+      <div className="bg-jarcata-500 h-fit inset-x-2 text-linkwater p-4 flex flex-col gap-2 rounded-lg">
         <h2 className="text-2xl font-bold">It's just a preview</h2>
         <p>
           <a className="font-bold hover:underline" href="/signup">
@@ -98,7 +98,7 @@ const PlayerBar = () => {
     )
 
   return (
-    <div className="bg-black text-linkwater w-full absolute bottom-0 py-4 flex items-center justify-between">
+    <div className="bg-black text-linkwater mb-0 py-4 flex items-center justify-between">
       <ReactPlayer
         ref={playerRef}
         url={currentSong?.audio}

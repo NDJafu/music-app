@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit"
 import { CurrentUser } from "../../app/types"
+import { api } from "../../utils/api"
 
 interface AuthState {
   currentUser: CurrentUser | null

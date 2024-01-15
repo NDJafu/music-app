@@ -1,4 +1,3 @@
-import React from "react"
 import BrandLogo from "../assets/brand.svg"
 import { BsFiles, BsFillHouseDoorFill, BsPlus, BsSearch } from "react-icons/bs"
 import { Link } from "react-router-dom"
@@ -7,7 +6,7 @@ import PlaylistDropdown from "./Playlist/PlaylistDropdown"
 
 const Sidebar = () => {
   return (
-    <aside className="col-span-1 min-w-fit bg-black p-2 text-linkwater">
+    <aside className="w-fit bg-black p-3 text-linkwater">
       <Link to="/">
         <img src={BrandLogo} alt="brand" />
       </Link>

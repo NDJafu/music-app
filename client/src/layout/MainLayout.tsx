@@ -23,17 +23,17 @@ const MainLayout = () => {
   }
 
   return (
-    <>
-      <div className="w-full h-screen grid grid-cols-6 bg-neutral-950">
+    <div className="w-full h-screen flex flex-col bg-neutral-950">
+      <div className="flex flex-grow self-stretch overflow-hidden">
         <Sidebar />
         <div
-          className="col-span-5 text-linkwater scroll-smooth bg-gradient-to-t from-neutral-950 from-[92%] to-martinique to-100% overflow-auto"
+          className="w-full text-linkwater scroll-smooth bg-gradient-to-t from-neutral-950 from-[92%] to-martinique to-100% overflow-auto"
           onScroll={handleBlur}
         >
           <div className="sticky top-0 z-10">
             <div
               className={`absolute inset-x-0 px-9 py-6 inline-flex justify-between transition-all duration-500 ${
-                isBlurred && "bg-neutral-950/90 backdrop-blur"
+                isBlurred && "bg-neutral-950/95 backdrop-blur"
               }`}
             >
               <HistoryNavigation />
@@ -56,7 +56,7 @@ const MainLayout = () => {
         </div>
       </div>
       <PlayerBar />
-    </>
+    </div>
   )
 }
 

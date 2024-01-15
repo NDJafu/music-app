@@ -16,6 +16,7 @@ const UploadTab = () => {
       })
     })
   }, [])
+
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
     accept: { "audio/*": [".mp3", ".flac", ".wav"] },
