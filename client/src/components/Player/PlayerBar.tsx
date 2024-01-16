@@ -16,6 +16,7 @@ import {
   previousTrack,
 } from "../../features/player/playerSlice"
 import { OnProgressProps } from "react-player/base"
+import { Link } from "react-router-dom"
 
 const PlayerBar = () => {
   const playerRef = useRef<ReactPlayer | null>(null)
@@ -85,12 +86,12 @@ const PlayerBar = () => {
 
   if (!currentUser)
     return (
-      <div className="bg-jarcata-500 h-fit inset-x-2 text-linkwater p-4 flex flex-col gap-2 rounded-lg">
+      <div className="bg-jarcata-500 h-fit mx-2 mb-2 text-linkwater p-4 flex flex-col gap-2 rounded-lg">
         <h2 className="text-2xl font-bold">It's just a preview</h2>
         <p>
-          <a className="font-bold hover:underline" href="/signup">
+          <Link className="font-bold hover:underline" to="/signup">
             Sign up
-          </a>{" "}
+          </Link>{" "}
           to Unicord now to join in, and explore the wide-range of musics our
           community creates & share.
         </p>
