@@ -16,43 +16,34 @@ import {
   addTrackToLikedMusic,
   removeTrackFromLikedMusic,
 } from "../features/playlist/playlistSlice"
+import { useGetTrackQuery } from "../features/track/trackApiSlice"
 
 const TrackPage = () => {
   const { id } = useParams()
   const dispatch = useAppDispatch()
   const player = useAppSelector((state) => state.player)
-  const track = useAppSelector((state) => state.track.viewedTrack)
   const { currentUserPlaylist } = useAppSelector((state) => state.playlist)
   const likedMusic = currentUserPlaylist.find(
     (playlist) => playlist.title == "Liked Music",
   )
   const ifSongIsLiked = likedMusic?.trackIds.includes(id as string)
 
+  const { data: track, isLoading } = useGetTrackQuery(id!)
+
   // fetching track
-  const loading = useAppSelector((state) => state.track.loading)
-  const [bgColor, setBgColor] = useState("#777777")
-  const setTrackBackgroundColor = (image: string) => {
-    getColor(image).then((color) => {
-      const result = color as number[]
-      setBgColor(`${result[0]},${result[1]},${result[2]}`)
-    })
+  const [bgColor, setBgColor] = useState("")
+
+  const setTrackBackgroundColor = async (image: string) => {
+    const color = await getColor(image)
+    setBgColor(`${color[0]},${color[1]},${color[2]}`)
   }
 
   const publicDate = new Date(track?.publicDate as Date)
   const year = publicDate.getFullYear()
 
   useEffect(() => {
-    const isSameTrack = track?.id == id
-    if (isSameTrack) {
-      setTrackBackgroundColor(track?.thumbnail as string)
-      return
-    }
-    dispatch(fetchTrackById(id as string))
-      .unwrap()
-      .then((track) => {
-        setTrackBackgroundColor(track.thumbnail)
-      })
-  }, [id])
+    setTrackBackgroundColor(track?.thumbnail as string)
+  }, [track])
 
   const handlePlaySong = () => {
     if (player.playing && track?.id == player.currentSong?.id) {
@@ -70,7 +61,7 @@ const TrackPage = () => {
     }
   }
 
-  if (!loading && track)
+  if (!isLoading && track)
     return (
       <div className="w-full text-linkwater">
         <div
