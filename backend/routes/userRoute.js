@@ -9,9 +9,9 @@ const {
   deleteUserById,
   showCurrentUser,
   addLikedMusicToAll,
-} = require("../Controller/userController");
+} = require("../controllers/userController");
 
-const authenticateUser = require("../Middleware/authentication");
+const authenticateUser = require("../middlewares/authentication");
 
 router.route("/").get(authenticateUser, getAllUsers);
 

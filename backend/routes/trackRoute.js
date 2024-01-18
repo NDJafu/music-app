@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const authenticateUser = require("../Middleware/authentication");
+const authenticateUser = require("../middlewares/authentication");
 
 const {
   createTrack,
@@ -9,7 +9,7 @@ const {
   updateTrackById,
   deleteTrackById,
   getAllTracksOfAUser,
-} = require("../Controller/trackController");
+} = require("../controllers/trackController");
 
 router.route("/").get(getAllTrack);
 router.route("/create").post(authenticateUser, createTrack);

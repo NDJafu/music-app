@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const authenticateUser = require("../Middleware/authentication");
+const authenticateUser = require("../middlewares/authentication");
 
 const {
   createPlaylist,
@@ -12,7 +12,7 @@ const {
   deleteTrackFromPlaylist,
   addTrackToLikedMusic,
   deleteTrackFromLikedMusic,
-} = require("../Controller/playlistController");
+} = require("../controllers/playlistController");
 
 router.route("/all/:userid").get(authenticateUser, getAllPlaylistOfAUser);
 router.route("/create").post(authenticateUser, createPlaylist);

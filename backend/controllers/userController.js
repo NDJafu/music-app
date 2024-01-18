@@ -1,12 +1,12 @@
-const User = require("../Model/User");
-const Playlist = require("../Model/Playlist");
+const User = require("../models/User");
+const Playlist = require("../models/Playlist");
 
-const { attachTokenToCookies } = require("../Utils/jwt");
+const { attachTokenToCookies } = require("../utils/jwt");
 
 const {
   checkPermissonToChangeInfo,
   checkAdminRightPermission,
-} = require("../Utils/checkPermission");
+} = require("../utils/checkPermission");
 
 // nhung function can thiet trong user controller la gi
 const getUserById = async (req, res) => {

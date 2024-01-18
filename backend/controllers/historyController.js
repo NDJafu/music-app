@@ -1,5 +1,5 @@
-const History = require("../Model/History");
-const { checkPermissonToChangeInfo } = require("../Utils/checkPermission");
+const History = require("../models/History");
+const { checkPermissonToChangeInfo } = require("../utils/checkPermission");
 
 //chuc nang: khi co mot request duoc gui xuong thi tao mot history luu vao bang History
 //  thuoc nguoi dung do

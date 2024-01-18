@@ -1,5 +1,5 @@
 const Track = require("../Model/Track");
-const { checkPermissonToChangeInfo } = require("../Utils/checkPermission");
+const { checkPermissonToChangeInfo } = require("../utils/checkPermission");
 
 const createTrack = async (req, res) => {
   const { userId } = req.user;

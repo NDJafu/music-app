@@ -2,9 +2,9 @@ const express = require("express");
 
 const router = express.Router();
 
-const authenticateUser = require("../Middleware/authentication");
+const authenticateUser = require("../middlewares/authentication");
 
-const { uploadFile } = require("../Controller/uploadFileController");
+const { uploadFile } = require("../controllers/uploadFileController");
 
 router.route("/file").post(authenticateUser, uploadFile);
 

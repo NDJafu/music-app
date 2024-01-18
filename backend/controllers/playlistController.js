@@ -1,6 +1,6 @@
-const Playlist = require("../Model/Playlist");
-const User = require("../Model/User");
-const { checkPermissonToChangeInfo } = require("../Utils/checkPermission");
+const Playlist = require("../models/Playlist");
+const User = require("../models/User");
+const { checkPermissonToChangeInfo } = require("../utils/checkPermission");
 
 const createPlaylist = async (req, res) => {
   req.body.userId = req.user.userId;

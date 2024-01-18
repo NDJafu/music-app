@@ -7,9 +7,9 @@ const {
   getOneHistoryByHistoryId,
   deleteOneHistoryByHistoryId,
   deleteAllHistoryByUserId,
-} = require("../Controller/historyController");
+} = require("../controllers/historyController");
 
-const authenticateUser = require("../Middleware/authentication");
+const authenticateUser = require("../middlewares/authentication");
 
 router
   .route("/")

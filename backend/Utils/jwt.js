@@ -1,6 +1,6 @@
 require("dotenv").config();
 const jwt = require("jsonwebtoken");
-const User = require("../Model/User");
+const User = require("../models/User");
 
 const attachTokenToCookies = async ({ res, payload }) => {
   const token = jwt.sign(payload, process.env.JWT_REFRESH_SECRET, {
