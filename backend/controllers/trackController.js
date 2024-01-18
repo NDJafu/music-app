@@ -1,4 +1,4 @@
-const Track = require("../Model/Track");
+const Track = require("../models/Track");
 const { checkPermissonToChangeInfo } = require("../utils/checkPermission");
 
 const createTrack = async (req, res) => {

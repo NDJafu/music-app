@@ -1,5 +1,5 @@
-const User = require("../Model/User");
-const Playlist = require("../Model/Playlist");
+const User = require("../models/User");
+const Playlist = require("../models/Playlist");
 const jwt = require("jsonwebtoken");
 
 //Register
