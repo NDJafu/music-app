@@ -16,12 +16,7 @@ const getAllTrack = async (req, res) => {
     .json({ message: "Successfully", length: allTracks.length, allTracks });
 };
 const getTrackById = async (req, res) => {
-  const track = await Track.find({ _id: req.params.id });
-
-  //When track is get to be listening, automatically adding this track to history database
-  // const historyBody = { userId: req.user.userId, trackId: req.params.id };
-
-  // const history = await History.create(historyBody);
+  const track = await Track.findById(req.params.id);
 
   res.status(200).json({ message: "Find Track Successfully", track });
 };

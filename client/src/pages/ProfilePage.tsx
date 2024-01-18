@@ -5,12 +5,16 @@ import { useAppDispatch, useAppSelector } from "../app/hooks"
 import TrackCard from "../components/Track/TrackCard"
 import { useEffect } from "react"
 import { getUserUpload } from "../features/track/trackSlice"
+import { useGetTrackByUserQuery } from "../features/track/trackApiSlice"
 
 const ProfilePage = () => {
   const { id } = useParams()
   const dispatch = useAppDispatch()
   const currentUser = useAppSelector((state) => state.auth.currentUser)
   const userUploads = useAppSelector((state) => state.track.trackByUser)
+  const { data: uploads } = useGetTrackByUserQuery(id!)
+  console.log(uploads)
+
   useEffect(() => {
     dispatch(getUserUpload(id as string))
   }, [id])

@@ -9,13 +9,13 @@ export const trackApiSlice = apiSlice.injectEndpoints({
         url: `/track/${id}`,
         method: "GET",
       }),
-      transformResponse: async (response: { track: any[] }) => {
-        const result = response.track[0]
-        const trackFromThirdPartyAPI = await searchTracks(
+      transformResponse: async (response: { track: any }) => {
+        const result = response.track
+        const trackFromMusixmatch = await searchTracks(
           result.title,
           result.artist,
         )
-        const lyrics = await getLyrics(trackFromThirdPartyAPI)
+        const lyrics = await getLyrics(trackFromMusixmatch)
         const transformedData: Track = {
           ...result,
           id: result._id,
@@ -28,7 +28,27 @@ export const trackApiSlice = apiSlice.injectEndpoints({
         return transformedData
       },
     }),
+    getTrackByUser: builder.query<Track[], string>({
+      query: (id) => ({
+        url: `/track/alltrack/user/${id}`,
+        method: "GET",
+      }),
+      transformResponse: async (response: { allTracks: any[] }) => {
+        const transformedData: Track[] = response.allTracks.map((track) => {
+          return {
+            ...track,
+            id: track._id,
+            thumbnail: track.image,
+            uploader: track.userId,
+            privacy: track.isPublic,
+            banned: track.isBanned,
+          }
+        })
+
+        return transformedData
+      },
+    }),
   }),
 })
 
-export const { useGetTrackQuery } = trackApiSlice
+export const { useGetTrackQuery, useGetTrackByUserQuery } = trackApiSlice
