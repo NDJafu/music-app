@@ -12,37 +12,19 @@ const {
 const getUserById = async (req, res) => {
   const { id } = req.params;
 
-  const user = await User.findOne({ _id: id }).select("-password -role");
+  const user = await User.findById(id)
+    .select("-password -role -refreshToken -__v")
+    .populate("likedMusic");
+
   if (!user) {
     return res.status(500).json({ error: "There is no user" });
   }
 
-  res.status(200).json({ message: "Take user success", user });
+  res.status(200).json({ message: "User found successfully!", user });
 };
 
 const getAllUsers = async (req, res) => {
   const allUsers = await User.find({});
-  res.status(200).json({ message: "List all user", users: allUsers });
-};
-
-const addLikedMusicToAll = async (req, res) => {
-  const allUsers = await User.find({
-    _id: { $ne: "64be0195fa390b751500afb3" },
-  });
-
-  for (const user of allUsers) {
-    const playlistObj = {
-      userId: user._id,
-      title: "Liked Music",
-    };
-    const likedMusicPlaylist = await Playlist.create(playlistObj);
-
-    //set user liked music equal playlist id
-    user.likedMusic = likedMusicPlaylist._id;
-
-    user.save();
-  }
-
   res.status(200).json({ message: "List all user", users: allUsers });
 };
 
@@ -112,5 +94,4 @@ module.exports = {
   updateUserPassword,
   deleteUserById,
   showCurrentUser,
-  addLikedMusicToAll,
 };
