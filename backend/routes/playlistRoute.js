@@ -10,25 +10,24 @@ const {
   deletePlaylistById,
   addTrackToPlaylist,
   deleteTrackFromPlaylist,
-  addTrackToLikedMusic,
-  deleteTrackFromLikedMusic,
 } = require("../controllers/playlistController");
 
 router.route("/all/:userid").get(authenticateUser, getAllPlaylistOfAUser);
+
 router.route("/create").post(authenticateUser, createPlaylist);
+
 router
   .route("/:id")
-  .get(authenticateUser, getPlaylistById)
+  .get(getPlaylistById)
   .patch(authenticateUser, updatePlaylistById)
   .delete(authenticateUser, deletePlaylistById);
 
-router
-  .route("/likedmusic/track/:trackid")
-  .post(authenticateUser, addTrackToLikedMusic)
-  .delete(authenticateUser, deleteTrackFromLikedMusic);
-router
-  .route("/:playlistid/track/:trackid")
-  .post(authenticateUser, addTrackToPlaylist)
-  .delete(authenticateUser, deleteTrackFromPlaylist);
+router.post("/:id/add/:trackid", authenticateUser, addTrackToPlaylist);
+
+router.delete(
+  "/:id/remove/:trackid",
+  authenticateUser,
+  deleteTrackFromPlaylist
+);
 
 module.exports = router;
