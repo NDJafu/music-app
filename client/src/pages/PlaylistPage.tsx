@@ -1,65 +1,33 @@
-import React, { useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
 import { useAppDispatch, useAppSelector } from "../app/hooks"
 import { FullPlaylist, Track } from "../app/types"
-import {
-  setPause,
-  addToQueue,
-  playNewSong,
-  playEntirePlaylist,
-} from "../features/player/playerSlice"
+import { playEntirePlaylist } from "../features/player/playerSlice"
 import { getColor } from "../utils/colorthief"
-import { getPlaylistById } from "../features/playlist/playlistSlice"
-import { BsClock, BsPauseFill, BsPlayFill, BsThreeDots } from "react-icons/bs"
-import axios from "axios"
-import { duration } from "../utils/utils"
+import { BsClock, BsPauseFill, BsPlayFill } from "react-icons/bs"
 import TrackInPlaylist from "../components/Playlist/TrackInPlaylist"
 import PlaylistOptions from "../components/Playlist/PlaylistOptions"
-import { ToastContainer } from "react-toastify"
+import { useGetPlaylistByIdQuery } from "../features/playlist/playlistApiSlice"
+import PlaylistDetail from "../components/Playlist/PlaylistDetails"
 
 const PlaylistPage = () => {
   const { id } = useParams()
   const dispatch = useAppDispatch()
-  const [creator, setCreator] = useState("")
   const player = useAppSelector((state) => state.player)
-  const playlist = useAppSelector((state) => state.playlist.viewedPlaylist)
-  const isLoading = useAppSelector((state) => state.playlist.loading)
+  const { data: playlist, isLoading } = useGetPlaylistByIdQuery(id!)
 
   // fetching user
   const [bgColor, setBgColor] = useState("#777777")
 
-  const setTrackBackgroundColor = (image: string) => {
-    getColor(image).then((color) => {
-      const result = color as number[]
-      setBgColor(`${result[0]},${result[1]},${result[2]}`)
-    })
+  const setPlaylistBackgroundColor = async (image: string) => {
+    const color = await getColor(image)
+    setBgColor(`${color[0]},${color[1]},${color[2]}`)
   }
-
-  const getCreatorName = (userId: string) => {
-    axios.get(`/api/v1/user/${userId}`).then((response) => {
-      const creatorName = response.data.user.username
-      setCreator(creatorName)
-    })
-  }
-
-  useEffect(() => {
-    const ifSamePlaylist = playlist?.id == id
-    if (ifSamePlaylist) {
-      getCreatorName(playlist?.creator as string)
-      return
-    }
-    dispatch(getPlaylistById(id as string))
-      .unwrap()
-      .then((playlist) => {
-        getCreatorName(playlist.creator)
-        setTrackBackgroundColor(playlist.thumbnail)
-      })
-  }, [id])
 
   // Để check xem state viewedPlaylist có gì thay đổi khi cập nhật
   useEffect(() => {
     if (!playlist) return
-    setTrackBackgroundColor(playlist?.thumbnail as string)
+    setPlaylistBackgroundColor(playlist?.image)
   }, [playlist])
 
   const ifSameSongIsPlaying = (track: Track) => {
@@ -82,7 +50,7 @@ const PlaylistPage = () => {
           <div className="absolute flex bottom-9 items-end gap-4">
             <div className="relative">
               <img
-                src={playlist?.thumbnail}
+                src={playlist?.image}
                 alt="avatar"
                 className="w-60 h-60 object-cover shadow-lg shadow-black/50"
               />
@@ -90,12 +58,7 @@ const PlaylistPage = () => {
             <div className="font-bold flex flex-col gap-2">
               <p className="text-sm">Playlist</p>
               <h1 className="text-6xl">{playlist?.title}</h1>
-              <p className="text-sm mt-10">
-                {creator} &#8226;{" "}
-                <span className="font-normal">
-                  {playlist?.trackList.length} songs
-                </span>
-              </p>
+              <PlaylistDetail {...playlist} />
             </div>
           </div>
         </div>
@@ -113,7 +76,7 @@ const PlaylistPage = () => {
             </button>
             {playlist.title != "Liked Music" && <PlaylistOptions />}
           </div>
-          {playlist.trackList.length > 0 && (
+          {playlist?.trackId.length > 0 && (
             <div className="flex my-4 text-linkwater/50 items-center justify-between gap-4 px-4 py-4 border-b border-white/5 font-light">
               <span>#</span>
               <span className="flex-grow">Title</span>
@@ -122,7 +85,7 @@ const PlaylistPage = () => {
               </span>
             </div>
           )}
-          {playlist?.trackList.map((track, index) => (
+          {playlist?.trackId.map((track, index) => (
             <TrackInPlaylist key={index} track={track} index={index} />
           ))}
         </div>

@@ -30,34 +30,8 @@ export const getPlaylistById = createAsyncThunk(
   async (id: string) => {
     try {
       const response = await api.get(`/playlist/${id}`)
-      const playlistData = response.data.playlist
-      const trackList: Track[] = await Promise.all(
-        playlistData.trackId.map(async (id: string) => {
-          const response = await api.get(`/track/${id}`)
-          const trackData = response.data.track[0]
-          return {
-            id: trackData._id,
-            title: trackData.title,
-            artist: trackData.artist,
-            thumbnail: trackData.image,
-            uploader: trackData.userId,
-            audio: trackData.audio,
-            lyrics: trackData.lyrics,
-            duration: trackData.duration,
-            privacy: trackData.isPublic,
-            banned: trackData.isBanned,
-            publicDate: trackData.publicDate,
-          } as Track
-        }),
-      )
-      const playlist: FullPlaylist = {
-        id: playlistData._id,
-        title: playlistData.title,
-        creator: playlistData.userId,
-        trackList: trackList,
-        thumbnail: playlistData.image,
-      }
-      return playlist
+
+      return response
     } catch (e: any) {
       throw Error(`Error: ${e.response.data.error}`)
     }

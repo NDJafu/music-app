@@ -4,26 +4,43 @@ import { getLyrics, searchTracks } from "../../utils/musixmatchAPI"
 
 export const trackApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
+    getAllTrack: builder.query<Track[], void>({
+      query: () => ({
+        url: "/track",
+      }),
+      transformResponse: (response: {
+        message: string
+        length: number
+        allTracks: any[]
+      }) => {
+        const transformedData: Track[] = response.allTracks.map((track) => {
+          const { _id, __v, isPublic, isBanned, userId, ...rest } = track
+          return {
+            ...rest,
+            id: _id,
+            uploader: userId,
+            privacy: isPublic,
+            banned: isBanned,
+          }
+        })
+        return transformedData
+      },
+    }),
     getTrack: builder.query<Track, string>({
       query: (id) => ({
         url: `/track/${id}`,
-        method: "GET",
       }),
-      transformResponse: async (response: { track: any }) => {
-        const result = response.track
-        const trackFromMusixmatch = await searchTracks(
-          result.title,
-          result.artist,
-        )
+      transformResponse: async (response: { message: string; track: any }) => {
+        const { _id, __v, isPublic, isBanned, userId, ...rest } = response.track
+        const trackFromMusixmatch = await searchTracks(rest.title, rest.artist)
         const lyrics = await getLyrics(trackFromMusixmatch)
         const transformedData: Track = {
-          ...result,
-          id: result._id,
-          thumbnail: result.image,
-          uploader: result.userId,
+          ...rest,
+          id: _id,
+          uploader: userId,
           lyrics: lyrics,
-          privacy: result.isPublic,
-          banned: result.isBanned,
+          privacy: isPublic,
+          banned: isBanned,
         }
         return transformedData
       },
@@ -31,17 +48,16 @@ export const trackApiSlice = apiSlice.injectEndpoints({
     getTrackByUser: builder.query<Track[], string>({
       query: (id) => ({
         url: `/track/alltrack/user/${id}`,
-        method: "GET",
       }),
-      transformResponse: async (response: { allTracks: any[] }) => {
+      transformResponse: (response: { allTracks: any[] }) => {
         const transformedData: Track[] = response.allTracks.map((track) => {
+          const { _id, __v, isPublic, isBanned, userId, ...rest } = track
           return {
-            ...track,
-            id: track._id,
-            thumbnail: track.image,
-            uploader: track.userId,
-            privacy: track.isPublic,
-            banned: track.isBanned,
+            ...rest,
+            id: _id,
+            uploader: userId,
+            privacy: isPublic,
+            banned: isBanned,
           }
         })
 
@@ -51,4 +67,5 @@ export const trackApiSlice = apiSlice.injectEndpoints({
   }),
 })
 
-export const { useGetTrackQuery, useGetTrackByUserQuery } = trackApiSlice
+export const { useGetAllTrackQuery, useGetTrackQuery, useGetTrackByUserQuery } =
+  trackApiSlice

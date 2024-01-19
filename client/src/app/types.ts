@@ -16,7 +16,7 @@ export interface Track {
   id: string
   title: string
   artist: string
-  thumbnail: string
+  image: string
   uploader: string
   audio: string
   lyrics: string
@@ -29,12 +29,12 @@ export interface Track {
 export interface Playlist {
   id: string
   title: string
-  creator: string
-  thumbnail: string
+  userId: Pick<User, "id" | "username">
+  image: string
 }
 export interface IncompletePlaylist extends Playlist {
   trackIds: string[]
 }
 export interface FullPlaylist extends Playlist {
-  trackList: Track[]
+  trackId: Track[]
 }

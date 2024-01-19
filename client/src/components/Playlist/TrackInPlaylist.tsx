@@ -55,7 +55,7 @@ const TrackInPlaylist = ({ index, track }: Props) => {
       <span className="w-3">{index + 1}</span>
       <div className="flex-grow flex items-center gap-4">
         <img
-          src={track.thumbnail}
+          src={track.image}
           alt="thumbnail"
           className="object-cover w-10 h-10"
         />

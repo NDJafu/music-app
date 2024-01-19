@@ -28,7 +28,7 @@ const TrackCard = ({ track }: Props) => {
     >
       <div className="relative">
         <img
-          src={track.thumbnail}
+          src={track.image}
           alt=""
           className="w-full aspect-square object-cover rounded"
         />

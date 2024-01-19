@@ -13,7 +13,6 @@ const ProfilePage = () => {
   const currentUser = useAppSelector((state) => state.auth.currentUser)
   const userUploads = useAppSelector((state) => state.track.trackByUser)
   const { data: uploads } = useGetTrackByUserQuery(id!)
-  console.log(uploads)
 
   useEffect(() => {
     dispatch(getUserUpload(id as string))
@@ -31,12 +30,11 @@ const ProfilePage = () => {
             {currentUser?.id == id ? "Your uploads" : "Their uploads"}
           </h3>
           <div className="grid grid-cols-7 gap-2">
-            {userUploads
-              .slice(0, 7)
-              .reverse()
-              .map((track, index) => (
-                <TrackCard key={index} track={track} />
-              ))}
+            {!!uploads &&
+              uploads
+                .slice(0, 7)
+                .reverse()
+                .map((track, index) => <TrackCard key={index} track={track} />)}
           </div>
         </div>
       </div>

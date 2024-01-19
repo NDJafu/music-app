@@ -2,7 +2,6 @@ import { useParams } from "react-router-dom"
 import { useAppSelector, useAppDispatch } from "../app/hooks"
 import { useEffect, useState } from "react"
 import { getColor } from "../utils/colorthief"
-import { fetchTrackById } from "../features/track/trackSlice"
 import {
   addToQueue,
   playNewSong,
@@ -26,23 +25,25 @@ const TrackPage = () => {
   const likedMusic = currentUserPlaylist.find(
     (playlist) => playlist.title == "Liked Music",
   )
-  const ifSongIsLiked = likedMusic?.trackIds.includes(id as string)
+  const ifSongIsLiked = likedMusic?.trackIds.includes(id!)
 
   const { data: track, isLoading } = useGetTrackQuery(id!)
 
+  console.log(track)
+
   // fetching track
   const [bgColor, setBgColor] = useState("")
+
+  const publicDate = new Date(track?.publicDate as Date)
+  const year = publicDate.getFullYear()
 
   const setTrackBackgroundColor = async (image: string) => {
     const color = await getColor(image)
     setBgColor(`${color[0]},${color[1]},${color[2]}`)
   }
 
-  const publicDate = new Date(track?.publicDate as Date)
-  const year = publicDate.getFullYear()
-
   useEffect(() => {
-    setTrackBackgroundColor(track?.thumbnail as string)
+    if (track) setTrackBackgroundColor(track.image)
   }, [track])
 
   const handlePlaySong = () => {
@@ -74,7 +75,7 @@ const TrackPage = () => {
           <div className="absolute flex bottom-9 items-end gap-4">
             <div className="relative">
               <img
-                src={track.thumbnail}
+                src={track.image}
                 alt="avatar"
                 className="w-60 h-60 object-cover shadow-lg shadow-black/50"
               />

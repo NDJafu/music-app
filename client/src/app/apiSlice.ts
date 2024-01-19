@@ -27,9 +27,8 @@ const baseQueryWithReauth: BaseQueryFn<
   FetchBaseQueryError
 > = async (args, api, extraOptions) => {
   let result = await baseQuery(args, api, extraOptions)
-  const token = (api.getState() as RootState).auth.token
 
-  if (result?.error?.status == 406 && token) {
+  if (result?.error) {
     const refreshResult = await baseQuery("/auth/refresh", api, extraOptions)
 
     if (refreshResult?.data) {
