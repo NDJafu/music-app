@@ -10,15 +10,14 @@ const app = express();
 
 app.use(cors({ origin: "http://localhost:5173", credentials: true }));
 app.use(express.json());
-app.use(cookieParser());
-
-app.use("/api/v1/", routes);
-
+app.use(cookieParser(process.env.JWT_REFRESH_SECRET));
 app.use(
   fileUpload({
     useTempFiles: true,
   })
 );
+
+app.use("/api/v1/", routes);
 
 const port = 3000 || process.env.PORT;
 
