@@ -44,10 +44,10 @@ const App = () => {
       <Routes>
         <Route path="/" element={<MainLayout />}>
           <Route index element={<Homepage />} />
-          <Route path="/user/:id" element={<ProfilePage />} />
-          <Route path="/track/:id" element={<TrackPage />} />
-          <Route path="/playlist/:id" element={<PlaylistPage />} />
-          <Route path="/queue" element={<QueuePage />} />
+          <Route path="user/:id" element={<ProfilePage />} />
+          <Route path="track/:id" element={<TrackPage />} />
+          <Route path="playlist/:id" element={<PlaylistPage />} />
+          <Route path="queue" element={<QueuePage />} />
         </Route>
         <Route path="/account" element={<UserLayout />}>
           <Route path="login" element={<Login />} />
