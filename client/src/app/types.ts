@@ -32,8 +32,8 @@ export interface Playlist {
   userId: Pick<User, "id" | "username">
   image: string
 }
-export interface IncompletePlaylist extends Playlist {
-  trackIds: string[]
+export interface SidebarPlaylist extends Playlist {
+  trackId: string[]
 }
 export interface FullPlaylist extends Playlist {
   trackId: Track[]

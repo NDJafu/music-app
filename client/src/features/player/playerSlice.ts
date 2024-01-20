@@ -66,7 +66,7 @@ const playerSlice = createSlice({
         state.playerQueue.push(action.payload)
     },
     addPlaylistToQueue: (state, action: PayloadAction<FullPlaylist>) => {
-      for (const Track of action.payload.trackList) {
+      for (const Track of action.payload.trackId) {
         state.playerQueue.push(Track)
       }
       toast("Added to queue!")
@@ -77,8 +77,8 @@ const playerSlice = createSlice({
       state.playing = true
     },
     playEntirePlaylist: (state, action: PayloadAction<FullPlaylist>) => {
-      state.currentSong = action.payload.trackList[0]
-      state.playerQueue = action.payload.trackList
+      state.currentSong = action.payload.trackId[0]
+      state.playerQueue = action.payload.trackId
       state.queue = 0
       state.playing = true
     },

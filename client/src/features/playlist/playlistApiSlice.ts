@@ -1,5 +1,11 @@
 import { apiSlice } from "../../app/apiSlice"
-import { FullPlaylist, Track, User } from "../../app/types"
+import {
+  FullPlaylist,
+  Playlist,
+  SidebarPlaylist,
+  Track,
+  User,
+} from "../../app/types"
 
 export const playlistApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
@@ -7,6 +13,7 @@ export const playlistApiSlice = apiSlice.injectEndpoints({
       query: (id) => ({
         url: `/playlist/${id}`,
       }),
+      providesTags: ["Playlist"],
       transformResponse: (response: { message: string; playlist: any }) => {
         const { userId, _id, __v, trackId, ...rest } = response.playlist
 
@@ -36,6 +43,40 @@ export const playlistApiSlice = apiSlice.injectEndpoints({
         return transformedData
       },
     }),
+    getPlaylistByUser: builder.query<SidebarPlaylist[], string>({
+      query: (userId) => ({
+        url: `/playlist/all/${userId}`,
+      }),
+      providesTags: ["Playlist"],
+      transformResponse: (response: { message: string; playlist: any[] }) => {
+        const transformedData: SidebarPlaylist[] = response.playlist.map(
+          (p) => {
+            const { userId, _id, __v, ...rest } = p
+
+            const transformedUser: Pick<User, "id" | "username"> = {
+              id: userId._id,
+              username: userId.username,
+            }
+
+            const transformedPlaylist: SidebarPlaylist = {
+              id: _id,
+              userId: transformedUser,
+              ...rest,
+            }
+            return transformedPlaylist
+          },
+        )
+        return transformedData
+      },
+    }),
+    editPlaylist: builder.mutation<void, Partial<Playlist>>({
+      query: ({ id, title, image }) => ({
+        url: `/playlist/${id}`,
+        method: "PATCH",
+        body: { title, image },
+      }),
+      invalidatesTags: ["Playlist"],
+    }),
     addTrackToPlaylist: builder.mutation<
       void,
       { playlist_id: string; track_id: string }
@@ -59,6 +100,8 @@ export const playlistApiSlice = apiSlice.injectEndpoints({
 
 export const {
   useGetPlaylistByIdQuery,
+  useGetPlaylistByUserQuery,
+  useEditPlaylistMutation,
   useAddTrackToPlaylistMutation,
   useRemoveTrackFromPlaylistMutation,
 } = playlistApiSlice
