@@ -12,7 +12,7 @@ const {
   deleteTrackFromPlaylist,
 } = require("../controllers/playlistController");
 
-router.route("/all/:userid").get(authenticateUser, getAllPlaylistOfAUser);
+router.route("/all/:userid").get(getAllPlaylistOfAUser);
 
 router.route("/create").post(authenticateUser, createPlaylist);
 

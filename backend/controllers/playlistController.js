@@ -9,8 +9,10 @@ const createPlaylist = async (req, res) => {
 };
 
 const getAllPlaylistOfAUser = async (req, res) => {
-  checkPermissonToChangeInfo(req.user, req.params.userid);
-  const playlist = await Playlist.find({ userId: req.params.userid });
+  const playlist = await Playlist.find({ userId: req.params.userid }).populate(
+    "userId"
+  );
+
   res.status(200).json({ message: "Get all playlist of a user", playlist });
 };
 
@@ -23,34 +25,23 @@ const getPlaylistById = async (req, res) => {
     return res.status(404).json("Not found this playlist");
   }
 
-  res.status(200).json({ message: "Get Playlist Successfully", playlist });
+  res.status(200).json({
+    message: "Get Playlist Successfully",
+    playlist,
+  });
 };
 
 const updatePlaylistById = async (req, res) => {
-  const checkPlaylist = await Playlist.findById({ _id: req.params.id });
+  const { id } = req.params;
+  const checkPlaylist = await Playlist.findById(id);
 
   checkPermissonToChangeInfo(req.user, checkPlaylist.userId.toString());
 
-  if (req.body.image) {
-    filterObj.image = req.body.image;
-  }
-  if (req.body.title) {
-    filterObj.title = req.body.title;
-  }
-  if (req.body.trackId || req.body.userId) {
-    return res.status(404).json({ message: "Can't update these field" });
-  }
+  await Playlist.findByIdAndUpdate({ _id: id }, req.body, {
+    runValidators: true,
+  });
 
-  const playlist = await Playlist.findByIdAndUpdate(
-    { _id: req.params.id },
-    filterObj,
-    {
-      new: true,
-      runValidators: true,
-    }
-  );
-
-  res.status(200).json({ message: "Update playlist successfully", playlist });
+  res.status(200).json({ message: "Update playlist successfully" });
 };
 
 const deletePlaylistById = async (req, res) => {
