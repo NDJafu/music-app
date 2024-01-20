@@ -1,14 +1,14 @@
-import { IncompletePlaylist } from "../../app/types"
+import { SidebarPlaylist } from "../../app/types"
 import { useNavigate } from "react-router-dom"
 
 type Props = {
-  playlist: IncompletePlaylist
+  playlist: SidebarPlaylist
 }
 
 const PlaylistItem = ({ playlist }: Props) => {
   const navigate = useNavigate()
 
-  if (playlist.title == "Liked Music" && playlist.trackIds.length == 0) return
+  if (playlist.title == "Liked Music" && playlist.trackId.length == 0) return
 
   return (
     <div
@@ -16,7 +16,7 @@ const PlaylistItem = ({ playlist }: Props) => {
       onClick={() => navigate(`playlist/${playlist.id}`)}
     >
       <img
-        src={playlist.thumbnail}
+        src={playlist.image}
         alt={playlist.title}
         className="rounded-sm aspect-square h-full object-cover"
       />
@@ -25,8 +25,8 @@ const PlaylistItem = ({ playlist }: Props) => {
         <span className="font-normal text-sm text-linkwater/50">
           Playlist &#8226;{" "}
           {playlist.title == "Liked Music"
-            ? `${playlist.trackIds.length} songs`
-            : playlist.creator}
+            ? `${playlist.trackId.length} songs`
+            : playlist.userId.username}
         </span>
       </div>
     </div>

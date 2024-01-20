@@ -74,7 +74,9 @@ const PlaylistPage = () => {
                 <BsPlayFill size={42} />
               )}
             </button>
-            {playlist.title != "Liked Music" && <PlaylistOptions />}
+            {playlist.title != "Liked Music" && (
+              <PlaylistOptions {...playlist} />
+            )}
           </div>
           {playlist?.trackId.length > 0 && (
             <div className="flex my-4 text-linkwater/50 items-center justify-between gap-4 px-4 py-4 border-b border-white/5 font-light">

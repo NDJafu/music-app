@@ -10,7 +10,7 @@ export const uploadFile = async (file: File) => {
       },
     })
     return response.data
-  } catch (error: any) {
-    throw Error(`Error: ${error.response.data.message}`)
+  } catch (error) {
+    console.log(error)
   }
 }
