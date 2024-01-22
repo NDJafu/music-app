@@ -1,7 +1,5 @@
 import { useParams } from "react-router-dom"
 import { useAppSelector, useAppDispatch } from "../app/hooks"
-import { useEffect, useState } from "react"
-import { getColor } from "../utils/colorthief"
 import {
   addToQueue,
   playNewSong,
@@ -16,6 +14,7 @@ import {
   removeTrackFromLikedMusic,
 } from "../features/playlist/playlistSlice"
 import { useGetTrackQuery } from "../features/track/trackApiSlice"
+import { DynamicBackground } from "../components/ui/DynamicBackground"
 
 const TrackPage = () => {
   const { id } = useParams()
@@ -28,23 +27,9 @@ const TrackPage = () => {
   const ifSongIsLiked = likedMusic?.trackIds.includes(id!)
 
   const { data: track, isLoading } = useGetTrackQuery(id!)
-
-  console.log(track)
-
   // fetching track
-  const [bgColor, setBgColor] = useState("")
-
   const publicDate = new Date(track?.publicDate as Date)
   const year = publicDate.getFullYear()
-
-  const setTrackBackgroundColor = async (image: string) => {
-    const color = await getColor(image)
-    setBgColor(`${color[0]},${color[1]},${color[2]}`)
-  }
-
-  useEffect(() => {
-    if (track) setTrackBackgroundColor(track.image)
-  }, [track])
 
   const handlePlaySong = () => {
     if (player.playing && track?.id == player.currentSong?.id) {
@@ -65,11 +50,8 @@ const TrackPage = () => {
   if (!isLoading && track)
     return (
       <div className="w-full text-linkwater">
-        <div
-          style={{
-            backgroundColor: `rgba(${bgColor},0.4)`,
-            boxShadow: `0 120px 120px 20px rgba(${bgColor},0.2)`,
-          }}
+        <DynamicBackground
+          image={track.image}
           className="h-88 shadow-2xl shadow-neutral-500/8 relative px-9"
         >
           <div className="absolute flex bottom-9 items-end gap-4">
@@ -91,7 +73,7 @@ const TrackPage = () => {
               </p>
             </div>
           </div>
-        </div>
+        </DynamicBackground>
         <div className="mx-9 my-4">
           <div className="flex items-center gap-8">
             <button

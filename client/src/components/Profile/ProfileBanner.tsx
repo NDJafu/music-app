@@ -1,10 +1,10 @@
-import React, { useEffect, useRef, useState } from "react"
-import { BsPerson, BsPencil, BsX } from "react-icons/bs"
+import React, { useRef, useState } from "react"
+import { BsPencil, BsX } from "react-icons/bs"
 import { useParams } from "react-router-dom"
 import { useAppSelector, useAppDispatch } from "../../app/hooks"
-import { fetchUserById, updateUserById } from "../../features/user/userSlice"
-import { getColor } from "../../utils/colorthief"
+import { updateUserById } from "../../features/user/userSlice"
 import { uploadFile } from "../../utils/uploadfile"
+import { DynamicBackground } from "../ui/DynamicBackground"
 
 type EditForm = {
   image: File | undefined
@@ -17,8 +17,7 @@ const ProfileBanner = () => {
 
   // fetching user
   const { loading, userData: user } = useAppSelector((state) => state.user)
-  const { currentUser } = useAppSelector((state) => state.auth)
-  const [bgColor, setBgColor] = useState("")
+  const currentUser = useAppSelector((state) => state.auth.currentUser)
 
   const isCurrentUser = id == currentUser?.id
 
@@ -53,24 +52,6 @@ const ProfileBanner = () => {
     }
   }
 
-  const setProfileBackgroundColor = async (image: string) => {
-    const color = await getColor(image)
-    setBgColor(`${color[0]},${color[1]},${color[2]}`)
-  }
-
-  useEffect(() => {
-    const isSameUser = user?.id == id
-    if (isSameUser) {
-      setProfileBackgroundColor(user?.avatar as string)
-      return
-    }
-    dispatch(fetchUserById(id as string))
-      .unwrap()
-      .then((user) => {
-        setProfileBackgroundColor(user.avatar)
-      })
-  }, [id])
-
   const handleChangeOnClick = () => {
     setTimeout(() => imageRef.current?.click(), 10)
     setPreview(undefined)
@@ -98,25 +79,20 @@ const ProfileBanner = () => {
         avatar: avatarURL as string,
       }),
     )
-    setProfileBackgroundColor(avatarURL as string)
-    console.log(currentUser)
   }
 
   return (
     <>
       <div className="w-full text-linkwater">
         {!loading && (
-          <div
-            style={{
-              backgroundColor: `rgba(${bgColor},0.4)`,
-              boxShadow: `0 120px 120px 20px rgba(${bgColor},0.2)`,
-            }}
+          <DynamicBackground
+            image={currentUser?.avatar ?? ""}
             className="h-88 relative px-9"
           >
             <div className="absolute flex bottom-9 items-center gap-4">
               <div className="relative group">
                 <img
-                  src={user?.avatar ?? ""}
+                  src={currentUser?.avatar ?? ""}
                   alt="avatar"
                   className="w-60 h-60 rounded-full object-cover shadow-lg shadow-black/50"
                   loading="lazy"
@@ -135,10 +111,10 @@ const ProfileBanner = () => {
               </div>
               <div className="font-bold">
                 <p className="text-sm">Profile</p>
-                <h1 className="text-6xl">{user?.username}</h1>
+                <h1 className="text-6xl">{currentUser?.id}</h1>
               </div>
             </div>
-          </div>
+          </DynamicBackground>
         )}
       </div>
       {showModal && (

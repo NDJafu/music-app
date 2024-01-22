@@ -3,12 +3,12 @@ import { useParams } from "react-router-dom"
 import { useAppDispatch, useAppSelector } from "../app/hooks"
 import { FullPlaylist, Track } from "../app/types"
 import { playEntirePlaylist } from "../features/player/playerSlice"
-import { getColor } from "../utils/colorthief"
 import { BsClock, BsPauseFill, BsPlayFill } from "react-icons/bs"
 import TrackInPlaylist from "../components/Playlist/TrackInPlaylist"
 import PlaylistOptions from "../components/Playlist/PlaylistOptions"
 import { useGetPlaylistByIdQuery } from "../features/playlist/playlistApiSlice"
 import PlaylistDetail from "../components/Playlist/PlaylistDetails"
+import { DynamicBackground } from "../components/ui/DynamicBackground"
 
 const PlaylistPage = () => {
   const { id } = useParams()
@@ -17,34 +17,16 @@ const PlaylistPage = () => {
   const { data: playlist, isLoading } = useGetPlaylistByIdQuery(id!)
 
   // fetching user
-  const [bgColor, setBgColor] = useState("#777777")
-
-  const setPlaylistBackgroundColor = async (image: string) => {
-    const color = await getColor(image)
-    setBgColor(`${color[0]},${color[1]},${color[2]}`)
-  }
 
   // Để check xem state viewedPlaylist có gì thay đổi khi cập nhật
-  useEffect(() => {
-    if (!playlist) return
-    setPlaylistBackgroundColor(playlist?.image)
-  }, [playlist])
-
-  const ifSameSongIsPlaying = (track: Track) => {
-    return player.playing && track.id == player.currentSong?.id
-  }
-
   const handlePlayPlaylist = () => {
     dispatch(playEntirePlaylist(playlist as FullPlaylist))
   }
   if (!isLoading && playlist)
     return (
       <div className="w-full text-linkwater">
-        <div
-          style={{
-            backgroundColor: `rgba(${bgColor},0.4)`,
-            boxShadow: `0 120px 120px 20px rgba(${bgColor},0.2)`,
-          }}
+        <DynamicBackground
+          image={playlist.image}
           className="h-88 shadow-2xl shadow-neutral-500/8 relative px-9"
         >
           <div className="absolute flex bottom-9 items-end gap-4">
@@ -61,7 +43,7 @@ const PlaylistPage = () => {
               <PlaylistDetail {...playlist} />
             </div>
           </div>
-        </div>
+        </DynamicBackground>
         <div className="mx-9 my-4">
           <div className="flex items-center gap-8">
             <button
