@@ -4,11 +4,13 @@ import { useParams } from "react-router-dom"
 import { useAppSelector } from "../app/hooks"
 import TrackCard from "../components/Track/TrackCard"
 import { useGetTrackByUserQuery } from "../features/track/trackApiSlice"
+import { useGetUserQuery } from "../features/user/userApiSlice"
 
 const ProfilePage = () => {
   const { id } = useParams()
-  const currentUser = useAppSelector((state) => state.auth.currentUser)
   const { data: uploads } = useGetTrackByUserQuery(id!)
+  const { data: user } = useGetUserQuery(id!)
+  const currentUser = useAppSelector((state) => state.auth.currentUser)
 
   return (
     <>

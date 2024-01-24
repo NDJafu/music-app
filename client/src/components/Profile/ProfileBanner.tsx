@@ -5,6 +5,7 @@ import { useAppSelector, useAppDispatch } from "../../app/hooks"
 import { updateUserById } from "../../features/user/userSlice"
 import { uploadFile } from "../../utils/uploadfile"
 import { DynamicBackground } from "../ui/DynamicBackground"
+import { useGetUserQuery } from "../../features/user/userApiSlice"
 
 type EditForm = {
   image: File | undefined
@@ -16,7 +17,7 @@ const ProfileBanner = () => {
   const dispatch = useAppDispatch()
 
   // fetching user
-  const { loading, userData: user } = useAppSelector((state) => state.user)
+  const { data: user, isLoading } = useGetUserQuery(id!)
   const currentUser = useAppSelector((state) => state.auth.currentUser)
 
   const isCurrentUser = id == currentUser?.id
@@ -84,7 +85,7 @@ const ProfileBanner = () => {
   return (
     <>
       <div className="w-full text-linkwater">
-        {!loading && (
+        {!isLoading && (
           <DynamicBackground
             image={currentUser?.avatar ?? ""}
             topOpacity={0}
@@ -113,7 +114,7 @@ const ProfileBanner = () => {
               </div>
               <div className="font-bold">
                 <p className="text-sm">Profile</p>
-                <h1 className="text-6xl">{currentUser?.id}</h1>
+                <h1 className="text-6xl">{user?.username}</h1>
               </div>
             </div>
           </DynamicBackground>

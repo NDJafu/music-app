@@ -42,7 +42,6 @@ export function DynamicBackground({
             rgba(10, 10, 10, ${topOpacity}), 
             rgba(10, 10, 10, ${bottomOpacity})
         ),${colors?.[0].hex}`,
-          // boxShadow: `0 25px 240px 60px rgba(${colors?.[0].red}, ${colors?.[0].green}, ${colors?.[0].blue}, 0.5)`,
         }}
       >
         {children}
