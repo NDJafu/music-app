@@ -1,13 +1,17 @@
-import { createContext, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { extractColors } from "extract-colors"
 import { FinalColor } from "extract-colors/lib/types/Color"
 
 interface DynamicBackgroundProps extends React.ComponentPropsWithoutRef<"div"> {
   image: string
+  topOpacity: number
+  bottomOpacity: number
 }
 
 export function DynamicBackground({
   image,
+  topOpacity,
+  bottomOpacity,
   children,
   ...props
 }: DynamicBackgroundProps) {
@@ -35,8 +39,8 @@ export function DynamicBackground({
         {...props}
         style={{
           background: `linear-gradient(
-          rgba(0, 0, 0, 0), 
-          rgba(0, 0, 0, 0.6)
+            rgba(10, 10, 10, ${topOpacity}), 
+            rgba(10, 10, 10, ${bottomOpacity})
         ),${colors?.[0].hex}`,
           // boxShadow: `0 25px 240px 60px rgba(${colors?.[0].red}, ${colors?.[0].green}, ${colors?.[0].blue}, 0.5)`,
         }}

@@ -52,6 +52,8 @@ const TrackPage = () => {
       <div className="w-full text-linkwater">
         <DynamicBackground
           image={track.image}
+          topOpacity={0}
+          bottomOpacity={0.5}
           className="h-88 shadow-2xl shadow-neutral-500/8 relative px-9"
         >
           <div className="absolute flex bottom-9 items-end gap-4">

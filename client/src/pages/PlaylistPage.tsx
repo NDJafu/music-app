@@ -27,6 +27,8 @@ const PlaylistPage = () => {
       <div className="w-full text-linkwater">
         <DynamicBackground
           image={playlist.image}
+          topOpacity={0}
+          bottomOpacity={0.6}
           className="h-88 shadow-2xl shadow-neutral-500/8 relative px-9"
         >
           <div className="absolute flex bottom-9 items-end gap-4">
@@ -44,34 +46,42 @@ const PlaylistPage = () => {
             </div>
           </div>
         </DynamicBackground>
-        <div className="mx-9 my-4">
-          <div className="flex items-center gap-8">
-            <button
-              className="rounded-full w-16 h-16 bg-jarcata-500 flex justify-center items-center hover:brightness-105"
-              onClick={handlePlayPlaylist}
-            >
-              {player.playing && playlist?.id == player.currentSong?.id ? (
-                <BsPauseFill size={42} />
-              ) : (
-                <BsPlayFill size={42} />
+        <div className="relative">
+          <DynamicBackground
+            image={playlist.image}
+            topOpacity={0.6}
+            bottomOpacity={1}
+            className="absolute top-0 h-56 w-full opacity-50"
+          />
+          <div className="relative pt-4 px-9">
+            <div className="flex items-center gap-8">
+              <button
+                className="rounded-full w-16 h-16 bg-jarcata-500 flex justify-center items-center hover:brightness-105"
+                onClick={handlePlayPlaylist}
+              >
+                {player.playing && playlist?.id == player.currentSong?.id ? (
+                  <BsPauseFill size={42} />
+                ) : (
+                  <BsPlayFill size={42} />
+                )}
+              </button>
+              {playlist.title != "Liked Music" && (
+                <PlaylistOptions {...playlist} />
               )}
-            </button>
-            {playlist.title != "Liked Music" && (
-              <PlaylistOptions {...playlist} />
-            )}
-          </div>
-          {playlist?.trackId.length > 0 && (
-            <div className="flex my-4 text-linkwater/50 items-center justify-between gap-4 px-4 py-4 border-b border-white/5 font-light">
-              <span>#</span>
-              <span className="flex-grow">Title</span>
-              <span className="mr-4">
-                <BsClock />
-              </span>
             </div>
-          )}
-          {playlist?.trackId.map((track, index) => (
-            <TrackInPlaylist key={index} track={track} index={index} />
-          ))}
+            {playlist?.trackId.length > 0 && (
+              <div className="flex my-4 text-linkwater/50 items-center justify-between gap-4 px-4 py-4 border-b border-white/5 font-light">
+                <span>#</span>
+                <span className="flex-grow">Title</span>
+                <span className="mr-4">
+                  <BsClock />
+                </span>
+              </div>
+            )}
+            {playlist?.trackId.map((track, index) => (
+              <TrackInPlaylist key={index} track={track} index={index} />
+            ))}
+          </div>
         </div>
       </div>
     )

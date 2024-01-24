@@ -48,7 +48,7 @@ const TrackInPlaylist = ({ index, track }: Props) => {
 
   return (
     <div
-      className={`flex text-linkwater items-center justify-between gap-4 px-4 relative rounded-md  py-2 ${
+      className={`flex text-linkwater items-center justify-between gap-4 px-4 rounded-md py-2 ${
         toggleDropdown ? "bg-white/25" : "hover:bg-white/5"
       }`}
     >

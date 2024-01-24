@@ -87,6 +87,8 @@ const ProfileBanner = () => {
         {!loading && (
           <DynamicBackground
             image={currentUser?.avatar ?? ""}
+            topOpacity={0}
+            bottomOpacity={0.5}
             className="h-88 relative px-9"
           >
             <div className="absolute flex bottom-9 items-center gap-4">
