@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react"
 import { BsThreeDots } from "react-icons/bs"
-import { useAppDispatch } from "../../app/hooks"
+import { useAppDispatch, useAppSelector } from "../../app/hooks"
 import PlaylistEditModal from "./PlaylistEditModal"
 import { FullPlaylist } from "../../app/types"
 import { addPlaylistToQueue } from "../../features/player/playerSlice"
@@ -32,6 +32,7 @@ const PlaylistOptions = (playlist: FullPlaylist) => {
   const [toggleDropdown, setToggleDropdown] = useState(false)
 
   const dropdownRef: React.RefObject<HTMLDivElement> = useRef(null)
+  const currentUser = useAppSelector((state) => state.auth.currentUser)
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
 
@@ -62,7 +63,9 @@ const PlaylistOptions = (playlist: FullPlaylist) => {
           className="bg-neutral-800 absolute left-0 top-10 rounded text-base font-normal w-48 p-1 shadow-lg shadow-black/50 z-10"
           ref={dropdownRef}
         >
-          <PlaylistEditModal {...playlist} />
+          {currentUser?.id == playlist.userId.id && (
+            <PlaylistEditModal {...playlist} />
+          )}
           <OptionButton
             bottomBorder
             onClick={() => dispatch(addPlaylistToQueue(playlist))}
