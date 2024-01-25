@@ -14,7 +14,7 @@ const PlaylistPage = () => {
   const { id } = useParams()
   const dispatch = useAppDispatch()
   const player = useAppSelector((state) => state.player)
-  const { data: playlist, isLoading } = useGetPlaylistByIdQuery(id!)
+  const { data: playlist, isFetching } = useGetPlaylistByIdQuery(id!)
 
   // fetching user
 
@@ -22,14 +22,15 @@ const PlaylistPage = () => {
   const handlePlayPlaylist = () => {
     dispatch(playEntirePlaylist(playlist as FullPlaylist))
   }
-  if (!isLoading && playlist)
+
+  if (!isFetching && playlist)
     return (
       <div className="w-full text-linkwater">
         <DynamicBackground
           image={playlist.image}
           topOpacity={0}
           bottomOpacity={0.6}
-          className="h-88 shadow-2xl shadow-neutral-500/8 relative px-9"
+          className="h-88 px-9 relative"
         >
           <div className="absolute flex bottom-9 items-end gap-4">
             <div className="relative">

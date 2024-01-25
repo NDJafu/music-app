@@ -54,7 +54,7 @@ const TrackPage = () => {
           image={track.image}
           topOpacity={0}
           bottomOpacity={0.5}
-          className="h-88 shadow-2xl shadow-neutral-500/8 relative px-9"
+          className="h-88 relative px-9"
         >
           <div className="absolute flex bottom-9 items-end gap-4">
             <div className="relative">
@@ -76,35 +76,43 @@ const TrackPage = () => {
             </div>
           </div>
         </DynamicBackground>
-        <div className="mx-9 my-4">
-          <div className="flex items-center gap-8">
-            <button
-              className="rounded-full w-16 h-16 bg-jarcata-500 flex justify-center items-center hover:brightness-105"
-              onClick={handlePlaySong}
-            >
-              {player.playing && track?.id == player.currentSong?.id ? (
-                <BsPauseFill size={42} />
-              ) : (
-                <BsPlayFill size={42} />
-              )}
-            </button>
-            <button onClick={handleLikedSong}>
-              {ifSongIsLiked ? (
-                <BsHeartFill size={32} />
-              ) : (
-                <BsHeart size={32} />
-              )}
-            </button>
-            <TrackDropdown track={track} />
+        <div className="relative">
+          <DynamicBackground
+            image={track.image}
+            topOpacity={0.6}
+            bottomOpacity={1}
+            className="absolute top-0 h-56 w-full opacity-50"
+          />
+          <div className="px-9 py-4 relative">
+            <div className="flex items-center gap-8">
+              <button
+                className="rounded-full w-16 h-16 bg-jarcata-500 flex justify-center items-center hover:brightness-105"
+                onClick={handlePlaySong}
+              >
+                {player.playing && track?.id == player.currentSong?.id ? (
+                  <BsPauseFill size={42} />
+                ) : (
+                  <BsPlayFill size={42} />
+                )}
+              </button>
+              <button onClick={handleLikedSong}>
+                {ifSongIsLiked ? (
+                  <BsHeartFill size={32} />
+                ) : (
+                  <BsHeart size={32} />
+                )}
+              </button>
+              <TrackDropdown track={track} />
+            </div>
+            <h2 className="font-bold text-2xl my-4">Lyrics</h2>
+            <div
+              dangerouslySetInnerHTML={{
+                __html: track?.lyrics?.replace(/\n/g, "<br/>") as string,
+              }}
+              className="text-linkwater/50"
+            ></div>
+            quite obvious since this shit ain't free
           </div>
-          <h2 className="font-bold text-2xl my-4">Lyrics</h2>
-          <div
-            dangerouslySetInnerHTML={{
-              __html: track?.lyrics?.replace(/\n/g, "<br/>") as string,
-            }}
-            className="text-linkwater/50"
-          ></div>
-          quite obvious since this shit ain't free
         </div>
       </div>
     )
