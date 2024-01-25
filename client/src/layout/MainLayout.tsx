@@ -27,7 +27,7 @@ const MainLayout = () => {
       <div className="flex flex-grow self-stretch overflow-hidden">
         <Sidebar />
         <div
-          className="w-full text-linkwater scroll-smooth bg-gradient-to-t from-neutral-950 from-[92%] to-martinique to-100% overflow-auto"
+          className="w-full text-linkwater scroll-smooth overflow-auto"
           onScroll={handleBlur}
         >
           <div className="sticky top-0 z-10">
