@@ -1,12 +1,12 @@
-import React, { useContext, useEffect, useRef, useState } from "react"
+import React, { useContext, useRef, useState } from "react"
 import { FullPlaylist } from "../../app/types"
 import { BsPencil } from "react-icons/bs"
 import { ModalContext } from "../ui/Modal"
 import { useEditPlaylistMutation } from "../../features/playlist/playlistApiSlice"
 import { uploadFile } from "../../utils/uploadfile"
+import ImageInput from "../ui/ImageInput"
 
 const PlaylistEditForm = ({
-  openExplorerOnRender = false,
   playlist,
 }: {
   openExplorerOnRender?: boolean
@@ -15,13 +15,9 @@ const PlaylistEditForm = ({
   const { toggleModal } = useContext(ModalContext)
   const [selectedImage, setSelectedImage] = useState<File>()
   const [newPlaylistTitle, setNewPlaylistTitle] = useState(playlist.title)
-  const imageInputRef = useRef<HTMLInputElement>(null)
   const [editPlaylist] = useEditPlaylistMutation()
   const [isLoading, setIsLoading] = useState(false)
-
-  useEffect(() => {
-    if (openExplorerOnRender) imageInputRef.current?.click()
-  }, [])
+  const imageInputRef = useRef<HTMLInputElement>(null)
 
   function handleImageChange(event: React.ChangeEvent<HTMLInputElement>) {
     setSelectedImage(event.target.files?.[0])
@@ -58,12 +54,7 @@ const PlaylistEditForm = ({
       className="flex items-center justify-between gap-4 mt-8"
       onSubmit={submitForm}
     >
-      <input
-        type="file"
-        ref={imageInputRef}
-        onChange={handleImageChange}
-        className="hidden"
-      />
+      <ImageInput ref={imageInputRef} onChange={handleImageChange} />
       <div className="relative group">
         <img
           className="w-52 h-52 object-cover shadow-lg shadow-black/50 group-hover:brightness-50"
