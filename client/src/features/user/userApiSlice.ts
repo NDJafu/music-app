@@ -8,15 +8,25 @@ export const userApiSlice = apiSlice.injectEndpoints({
         url: `/user/${id}`,
       }),
       transformResponse: (response: { message: string; user: any }) => {
-        const { _id, likedMusic, ...rest } = response.user
+        const { _id, likedMusic, image, ...rest } = response.user
         const transformedData: User = {
           id: _id,
+          avatar: image,
           ...rest,
         }
         return transformedData
       },
+      providesTags: ["User"],
+    }),
+    editUser: builder.mutation<void, Partial<User & { image: string }>>({
+      query: (user) => ({
+        url: `/user/${user.id}`,
+        method: "PATCH",
+        body: user,
+      }),
+      invalidatesTags: ["User"],
     }),
   }),
 })
 
-export const { useGetUserQuery } = userApiSlice
+export const { useGetUserQuery, useEditUserMutation } = userApiSlice
