@@ -1,6 +1,12 @@
 import { useEffect } from "react"
 import { useAppSelector } from "./app/hooks"
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
+import {
+  Routes,
+  Route,
+  createBrowserRouter,
+  createRoutesFromElements,
+  RouterProvider,
+} from "react-router-dom"
 import "react-toastify/dist/ReactToastify.css"
 
 //layout imports
@@ -39,28 +45,29 @@ const App = () => {
     if (!token) verifyRefreshToken()
   }, [])
 
-  return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<MainLayout />}>
-          <Route index element={<Homepage />} />
-          <Route path="user/:id" element={<ProfilePage />} />
-          <Route path="track/:id" element={<TrackPage />} />
-          <Route path="playlist/:id" element={<PlaylistPage />} />
-          <Route path="queue" element={<QueuePage />} />
+  const router = createBrowserRouter(
+    createRoutesFromElements([
+      <Route path="/" element={<MainLayout />}>
+        <Route index element={<Homepage />} />
+        <Route path="user/:id" element={<ProfilePage />} />
+        <Route path="track/:id" element={<TrackPage />} />
+        <Route path="playlist/:id" element={<PlaylistPage />} />
+        <Route path="queue" element={<QueuePage />} />
+      </Route>,
+      <Route path="/account" element={<UserLayout />}>
+        <Route path="login" element={<Login />} />
+        <Route path="*" element={<AccountLayout />}>
+          <Route index path="overview" element={<AccountOverview />} />
+          <Route path="profile" element={<EditProfile />} />
+          <Route path="change-password" element={<ChangePassword />} />
         </Route>
-        <Route path="/account" element={<UserLayout />}>
-          <Route path="login" element={<Login />} />
-          <Route path="*" element={<AccountLayout />}>
-            <Route index path="overview" element={<AccountOverview />} />
-            <Route path="profile" element={<EditProfile />} />
-            <Route path="change-password" element={<ChangePassword />} />
-          </Route>
-        </Route>
-        <Route path="/signup" element={<RegisterPage />} />
-      </Routes>
-    </Router>
+      </Route>,
+      <Route path="/signup" element={<RegisterPage />} />,
+      <Route path="*" element={<div>everything else</div>} />,
+    ]),
   )
+
+  return <RouterProvider router={router} />
 }
 
 export default App
