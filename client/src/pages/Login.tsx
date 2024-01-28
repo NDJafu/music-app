@@ -1,11 +1,10 @@
 import React, { useState, useRef, useEffect } from "react"
-import { Link, useNavigate } from "react-router-dom"
+import { Link, Navigate } from "react-router-dom"
 import { useAppSelector } from "../app/hooks"
 import { useLoginMutation } from "../features/auth/authApiSlice"
 import { toast } from "react-toastify"
 
 const Login = () => {
-  const navigate = useNavigate()
   const [login, { isLoading }] = useLoginMutation()
   const currentUser = useAppSelector((state) => state.auth.currentUser)
   const userRef = useRef<HTMLInputElement>(null)
@@ -18,22 +17,19 @@ const Login = () => {
 
   useEffect(() => {
     userRef.current?.focus()
-    if (currentUser) navigate(-1)
   }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     await login({ ...loginForm })
       .unwrap()
-      .then(() => {
-        navigate("/")
-      })
       .catch((e) => toast.error(e.data.error))
       .finally(() => setLoginForm(initialState))
   }
 
   return (
     <div className="mx-auto w-1/3 bg-black h-screen mt-10 rounded-xl text-linkwater pt-12 box-border">
+      {currentUser && <Navigate to="/" />}
       <h1 className="text-center font-bold text-4xl">Login to Unicord</h1>
       <form
         className="mx-auto px-5 pt-5 w-1/2 flex flex-col gap-5 font-semibold"
@@ -66,7 +62,11 @@ const Login = () => {
             }
           />
         </label>
-        <button className="w-full bg-jarcata py-3 rounded-full" type="submit">
+        <button
+          className="w-full bg-jarcata py-3 rounded-full disabled:cursor-not-allowed"
+          type="submit"
+          disabled={isLoading}
+        >
           Login
         </button>
       </form>
