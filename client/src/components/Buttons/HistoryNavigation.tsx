@@ -10,7 +10,7 @@ type Props = {
 const ButtonLayout = ({ children, onClick, isDisabled }: Props) => {
   return (
     <button
-      className="bg-jarcata/75 backdrop-blur-lg backdrop-saturate-150 border border-white/10 p-2 rounded-full"
+      className="bg-jarcata p-2 rounded-full"
       onClick={onClick}
       disabled={isDisabled}
     >
