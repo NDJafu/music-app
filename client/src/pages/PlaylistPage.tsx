@@ -52,7 +52,7 @@ const PlaylistPage = () => {
             image={playlist.image}
             topOpacity={0.6}
             bottomOpacity={1}
-            className="absolute top-0 h-56 w-full opacity-50"
+            className="absolute h-56 w-full opacity-50"
           />
           <div className="relative pt-4 px-9">
             <div className="flex items-center gap-8">

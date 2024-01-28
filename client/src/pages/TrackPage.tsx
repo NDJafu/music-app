@@ -81,7 +81,7 @@ const TrackPage = () => {
             image={track.image}
             topOpacity={0.6}
             bottomOpacity={1}
-            className="absolute top-0 h-56 w-full opacity-50"
+            className="absolute h-56 w-full opacity-50"
           />
           <div className="px-9 py-4 relative">
             <div className="flex items-center gap-8">
