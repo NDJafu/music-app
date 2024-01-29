@@ -1,40 +1,40 @@
-import React, { useContext, useRef, useState } from "react"
-import { FullPlaylist } from "../../app/types"
-import { BsPencil } from "react-icons/bs"
-import { ModalContext } from "../ui/Modal"
-import { useEditPlaylistMutation } from "../../features/playlist/playlistApiSlice"
-import { uploadFile } from "../../utils/uploadfile"
-import ImageInput from "../ui/ImageInput"
+import React, { useContext, useRef, useState } from 'react';
+import { FullPlaylist } from '../../app/types';
+import { BsPencil } from 'react-icons/bs';
+import { ModalContext } from '../ui/Modal';
+import { useEditPlaylistMutation } from '../../features/playlist/playlistApiSlice';
+import { uploadFile } from '../../utils/uploadfile';
+import ImageInput from '../ui/ImageInput';
 
 const PlaylistEditForm = ({
   playlist,
 }: {
-  openExplorerOnRender?: boolean
-  playlist: FullPlaylist
+  openExplorerOnRender?: boolean;
+  playlist: FullPlaylist;
 }) => {
-  const { toggleModal } = useContext(ModalContext)
-  const [selectedImage, setSelectedImage] = useState<File>()
-  const [newPlaylistTitle, setNewPlaylistTitle] = useState(playlist.title)
-  const [editPlaylist] = useEditPlaylistMutation()
-  const [isLoading, setIsLoading] = useState(false)
-  const imageInputRef = useRef<HTMLInputElement>(null)
+  const { toggleModal } = useContext(ModalContext);
+  const [selectedImage, setSelectedImage] = useState<File>();
+  const [newPlaylistTitle, setNewPlaylistTitle] = useState(playlist.title);
+  const [editPlaylist] = useEditPlaylistMutation();
+  const [isLoading, setIsLoading] = useState(false);
+  const imageInputRef = useRef<HTMLInputElement>(null);
 
   function handleImageChange(event: React.ChangeEvent<HTMLInputElement>) {
-    setSelectedImage(event.target.files?.[0])
+    setSelectedImage(event.target.files?.[0]);
   }
 
   const submitForm = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    setIsLoading(true)
+    e.preventDefault();
+    setIsLoading(true);
 
-    let newPlaylistImage = playlist.image
+    let newPlaylistImage = playlist.image;
 
     if (selectedImage) {
       const response = await uploadFile(selectedImage).catch(() => {
-        setIsLoading(false)
-        return
-      })
-      newPlaylistImage = response.fileURL
+        setIsLoading(false);
+        return;
+      });
+      newPlaylistImage = response.fileURL;
     }
 
     await editPlaylist({
@@ -44,56 +44,56 @@ const PlaylistEditForm = ({
     })
       .unwrap()
       .then(() => {
-        toggleModal()
+        toggleModal();
       })
-      .finally(() => setIsLoading(false))
-  }
+      .finally(() => setIsLoading(false));
+  };
 
   return (
     <form
-      className="flex items-center justify-between gap-4 mt-8"
+      className="mt-8 flex items-center justify-between gap-4"
       onSubmit={submitForm}
     >
       <ImageInput ref={imageInputRef} onChange={handleImageChange} />
-      <div className="relative group">
+      <div className="group relative">
         <img
-          className="w-52 h-52 object-cover shadow-lg shadow-black/50 group-hover:brightness-50"
+          className="h-52 w-52 object-cover shadow-lg shadow-black/50 group-hover:brightness-50"
           src={
             selectedImage ? URL.createObjectURL(selectedImage) : playlist?.image
           }
         />
-        <div className="absolute inset-0 hidden group-hover:flex flex-col justify-center items-center ">
+        <div className="absolute inset-0 hidden flex-col items-center justify-center group-hover:flex ">
           <BsPencil size={64} />
           <button
             type="button"
             className="hover:underline"
             onClick={() => {
-              imageInputRef.current?.click()
+              imageInputRef.current?.click();
             }}
           >
             Change image
           </button>
         </div>
       </div>
-      <div className="flex-grow flex flex-col gap-2 justify-center">
+      <div className="flex flex-grow flex-col justify-center gap-2">
         <input
           type="text"
           value={newPlaylistTitle}
           onChange={(e) => {
-            setNewPlaylistTitle(e.target.value)
+            setNewPlaylistTitle(e.target.value);
           }}
-          className="bg-neutral-800 self-stretch p-2 rounded focus:outline-neutral-500 outline-1 outline-none outline-offset-0"
+          className="self-stretch rounded bg-neutral-800 p-2 outline-none outline-1 outline-offset-0 focus:outline-neutral-500"
         />
         <button
           type="submit"
-          className="bg-jarcata rounded-full text-lg font-bold text-linkwater px-8 py-2 w-fit self-end disabled:cursor-not-allowed"
+          className="w-fit self-end rounded-full bg-jarcata px-8 py-2 text-lg font-bold text-linkwater disabled:cursor-not-allowed"
           disabled={isLoading}
         >
           Save
         </button>
       </div>
     </form>
-  )
-}
+  );
+};
 
-export default PlaylistEditForm
+export default PlaylistEditForm;

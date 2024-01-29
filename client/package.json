@@ -42,8 +42,9 @@
     "eslint-plugin-prettier": "^4.2.1",
     "jsdom": "^21.1.0",
     "postcss": "^8.4.24",
-    "prettier": "^2.7.1",
+    "prettier": "^3.2.4",
     "prettier-config-nick": "^1.0.2",
+    "prettier-plugin-tailwindcss": "^0.5.11",
     "tailwindcss": "^3.3.2",
     "typescript": "^5.0.2",
     "vite": "^4.0.0",
@@ -62,5 +63,13 @@
       "react/jsx-no-target-blank": "off"
     }
   },
-  "prettier": "prettier-config-nick"
+  "prettier": {
+    "trailingComma": "es5",
+    "tabWidth": 2,
+    "semi": true,
+    "singleQuote": true,
+    "plugins": [
+      "prettier-plugin-tailwindcss"
+    ]
+  }
 }

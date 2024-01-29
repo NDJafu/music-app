@@ -1,8 +1,8 @@
-import React, { useEffect } from "react"
-import { Outlet } from "react-router-dom"
-import AccountSidebar from "../components/AccountSidebar"
-import { useAppDispatch, useAppSelector } from "../app/hooks"
-import { fetchUserById } from "../features/user/userSlice"
+import React, { useEffect } from 'react'
+import { Outlet } from 'react-router-dom'
+import AccountSidebar from '../components/AccountSidebar'
+import { useAppDispatch, useAppSelector } from '../app/hooks'
+import { fetchUserById } from '../features/user/userSlice'
 
 const AccountLayout = () => {
   const dispatch = useAppDispatch()
@@ -12,7 +12,7 @@ const AccountLayout = () => {
   }, [id])
 
   return (
-    <div className="flex mx-auto w-1/2 bg-linkwater h-screen text-dark box-border">
+    <div className="mx-auto box-border flex h-screen w-1/2 bg-linkwater text-dark">
       <AccountSidebar />
       <div className="flex-grow px-8 py-9">
         <Outlet />
