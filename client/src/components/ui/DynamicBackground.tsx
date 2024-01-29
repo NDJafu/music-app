@@ -1,11 +1,11 @@
-import { useEffect, useState } from "react"
-import { extractColors } from "extract-colors"
-import { FinalColor } from "extract-colors/lib/types/Color"
+import { useEffect, useState } from 'react';
+import { extractColors } from 'extract-colors';
+import { FinalColor } from 'extract-colors/lib/types/Color';
 
-interface DynamicBackgroundProps extends React.ComponentPropsWithoutRef<"div"> {
-  image: string
-  topOpacity: number
-  bottomOpacity: number
+interface DynamicBackgroundProps extends React.ComponentPropsWithoutRef<'div'> {
+  image: string;
+  topOpacity: number;
+  bottomOpacity: number;
 }
 
 export function DynamicBackground({
@@ -15,23 +15,23 @@ export function DynamicBackground({
   children,
   ...props
 }: DynamicBackgroundProps) {
-  const [colors, setColors] = useState<FinalColor[]>([])
+  const [colors, setColors] = useState<FinalColor[]>([]);
 
   useEffect(() => {
     const getImageColor = async () => {
       const colors = await extractColors(image, {
-        crossOrigin: "anonymous",
+        crossOrigin: 'anonymous',
         pixels: 800,
-      })
+      });
       setColors(
         colors
           .filter(({ lightness }) => lightness < 0.9 && lightness > 0.05)
-          .sort((a, b) => b.area - a.area),
-      )
-    }
+          .sort((a, b) => b.area - a.area)
+      );
+    };
 
-    getImageColor()
-  }, [image])
+    getImageColor();
+  }, [image]);
 
   if (colors.length > 0)
     return (
@@ -46,5 +46,5 @@ export function DynamicBackground({
       >
         {children}
       </div>
-    )
+    );
 }
