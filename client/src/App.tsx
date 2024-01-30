@@ -1,49 +1,48 @@
-import { useEffect } from "react"
-import { useAppSelector } from "./app/hooks"
+import { useEffect } from 'react';
+import { useAppSelector } from './app/hooks';
 import {
-  Routes,
   Route,
   createBrowserRouter,
   createRoutesFromElements,
   RouterProvider,
-} from "react-router-dom"
-import "react-toastify/dist/ReactToastify.css"
+} from 'react-router-dom';
+import 'react-toastify/dist/ReactToastify.css';
+import { useRefreshMutation } from './features/auth/authApiSlice';
 
 //layout imports
-import MainLayout from "./layout/MainLayout"
-import UserLayout from "./layout/UserLayout"
-import AccountLayout from "./layout/AccountLayout"
+import MainLayout from './layout/MainLayout';
+import UserLayout from './layout/UserLayout';
+import AccountLayout from './layout/AccountLayout';
 
 //page imports
-import Homepage from "./pages/Homepage"
-import Login from "./pages/Login"
-import RegisterPage from "./pages/RegisterPage"
-import ProfilePage from "./pages/ProfilePage"
-import AccountOverview from "./pages/AccountOverview"
-import EditProfile from "./pages/EditProfile"
-import ChangePassword from "./pages/ChangePassword"
-import TrackPage from "./pages/TrackPage"
-import PlaylistPage from "./pages/PlaylistPage"
-import QueuePage from "./pages/QueuePage"
-import { useRefreshMutation } from "./features/auth/authApiSlice"
+import Homepage from './pages/Homepage';
+import Login from './pages/Login';
+import RegisterPage from './pages/RegisterPage';
+import ProfilePage from './pages/ProfilePage';
+import AccountOverview from './pages/AccountOverview';
+import EditProfile from './pages/EditProfile';
+import ChangePassword from './pages/ChangePassword';
+import TrackPage from './pages/TrackPage';
+import PlaylistPage from './pages/PlaylistPage';
+import QueuePage from './pages/QueuePage';
 
 const App = () => {
-  const token = useAppSelector((state) => state.auth.token)
+  const token = useAppSelector((state) => state.auth.token);
 
   const [refresh, { isUninitialized, isLoading, isSuccess, isError, error }] =
-    useRefreshMutation()
+    useRefreshMutation();
 
   useEffect(() => {
     const verifyRefreshToken = async () => {
       try {
-        await refresh()
+        await refresh();
       } catch (err) {
-        console.log(err)
+        console.log(err);
       }
-    }
+    };
 
-    if (!token) verifyRefreshToken()
-  }, [])
+    if (!token) verifyRefreshToken();
+  }, []);
 
   const router = createBrowserRouter(
     createRoutesFromElements([
@@ -64,10 +63,10 @@ const App = () => {
       </Route>,
       <Route path="/signup" element={<RegisterPage />} />,
       <Route path="*" element={<div>everything else</div>} />,
-    ]),
-  )
+    ])
+  );
 
-  return <RouterProvider router={router} />
-}
+  return <RouterProvider router={router} />;
+};
 
-export default App
+export default App;
