@@ -66,9 +66,9 @@ const addTrackToPlaylist = async (req, res) => {
 };
 
 const deleteTrackFromPlaylist = async (req, res) => {
-  const { playlistid, trackid } = req.params;
-  const playlist = await Playlist.findByIdAndUpdate(
-    { _id: playlistid },
+  const { id, trackid } = req.params;
+  await Playlist.findByIdAndUpdate(
+    { _id: id },
     { $pull: { trackId: trackid } },
     {
       new: true,
@@ -76,9 +76,7 @@ const deleteTrackFromPlaylist = async (req, res) => {
     }
   );
 
-  res
-    .status(200)
-    .json({ message: "Delete track from playlist successfully", playlist });
+  res.status(200).json({ message: "Delete track from playlist successfully" });
 };
 
 const addTrackToLikedMusic = async (req, res) => {
