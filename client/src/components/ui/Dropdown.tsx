@@ -56,10 +56,15 @@ export function DropdownTrigger({ children, ...props }: DropdownTriggerProps) {
 }
 
 interface DropdownContentProps extends React.ComponentPropsWithoutRef<'div'> {
+  rightSide?: boolean;
   children: React.ReactNode;
 }
 
-export function DropdownContent({ children, ...props }: DropdownContentProps) {
+export function DropdownContent({
+  rightSide = false,
+  children,
+  ...props
+}: DropdownContentProps) {
   const { showDropdown, toggleDropdown, setActiveSubMenu } =
     useContext(DropdownContext);
 
@@ -83,7 +88,7 @@ export function DropdownContent({ children, ...props }: DropdownContentProps) {
     return (
       <div
         {...props}
-        className={`absolute right-0 z-10 w-56 rounded bg-neutral-900 p-1 shadow-lg shadow-black/50 ${props.className}`}
+        className={`absolute ${rightSide ? 'left-0' : 'right-0'} z-10 w-56 rounded bg-neutral-900 p-1 shadow-lg shadow-black/50 ${props.className}`}
         ref={dropdownRef}
       >
         {children}
@@ -141,7 +146,7 @@ export function DropdownSubMenu({
   );
 }
 
-interface DropdownTriggerProps
+interface DropdownSubMenuTriggerProps
   extends React.ComponentPropsWithoutRef<'button'> {
   children: React.ReactNode;
 }
@@ -149,7 +154,7 @@ interface DropdownTriggerProps
 export function DropdownSubMenuTrigger({
   children,
   ...props
-}: DropdownTriggerProps) {
+}: DropdownSubMenuTriggerProps) {
   const { subMenu, setActiveSubMenu } = useContext(DropdownContext);
   const menu = useContext(SubMenuContext);
 
@@ -160,7 +165,9 @@ export function DropdownSubMenuTrigger({
         props.className ??
         `w-full items-center gap-2 rounded-sm p-2 text-start ${subMenu == menu && 'bg-white/5'}`
       }
-      onMouseOver={() => setActiveSubMenu(menu)}
+      onMouseOver={() => {
+        if (menu != subMenu) setActiveSubMenu(menu);
+      }}
     >
       {children}
     </button>
@@ -170,9 +177,11 @@ export function DropdownSubMenuTrigger({
 interface DropdownSubMenuContentProps
   extends React.ComponentPropsWithoutRef<'div'> {
   children: React.ReactNode;
+  rightSide?: boolean;
 }
 
 export function DropdownSubMenuContent({
+  rightSide = false,
   children,
   ...props
 }: DropdownSubMenuContentProps) {
@@ -183,7 +192,7 @@ export function DropdownSubMenuContent({
     return (
       <div
         {...props}
-        className={`absolute right-56 top-0 w-56 rounded bg-neutral-900 p-1 shadow-lg shadow-black/50 ${props.className}`}
+        className={`absolute ${rightSide ? 'left-56' : 'right-56'} top-0 w-56 rounded bg-neutral-900 p-1 shadow-lg shadow-black/50 ${props.className}`}
       >
         {children}
       </div>

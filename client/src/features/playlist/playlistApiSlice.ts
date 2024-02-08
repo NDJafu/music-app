@@ -85,6 +85,7 @@ export const playlistApiSlice = apiSlice.injectEndpoints({
         url: `/playlist/${playlist_id}/add/${track_id}`,
         method: 'POST',
       }),
+      invalidatesTags: ['Playlist'],
     }),
     removeTrackFromPlaylist: builder.mutation<
       void,

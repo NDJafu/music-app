@@ -1,113 +1,84 @@
-import React, { useEffect, useRef, useState } from "react"
-import { BsCaretRightFill, BsThreeDots } from "react-icons/bs"
-import { Playlist, Track } from "../../app/types"
-import { useAppDispatch, useAppSelector } from "../../app/hooks"
+import { BsSearch, BsThreeDots } from 'react-icons/bs';
+import { SidebarPlaylist, Track } from '../../app/types';
+import { useAppDispatch } from '../../app/hooks';
+import { addToQueue } from '../../features/player/playerSlice';
 import {
-  addTrackToLikedMusic,
-  addTrackToPlaylist,
-  createNewPlaylist,
-} from "../../features/playlist/playlistSlice"
-import { addToQueue } from "../../features/player/playerSlice"
+  Dropdown,
+  DropdownContent,
+  DropdownItem,
+  DropdownSeparator,
+  DropdownSubMenu,
+  DropdownSubMenuContent,
+  DropdownSubMenuTrigger,
+  DropdownTrigger,
+} from '../ui/Dropdown';
+import { useState } from 'react';
+import { useAddTrackToPlaylistMutation } from '../../features/playlist/playlistApiSlice';
 
 type Props = {
-  track: Track
-}
+  track: Track;
+  playlists: SidebarPlaylist[];
+};
 
-const TrackDropdown = ({ track }: Props) => {
-  const [toggleDropdown, setToggleDropdown] = useState(false)
-  const dialogRef: React.RefObject<HTMLDivElement> = useRef(null)
-  const dispatch = useAppDispatch()
-  const currentUserPlaylists = useAppSelector(
-    (state) => state.playlist.currentUserPlaylist,
-  )
+const TrackDropdown = ({ track, playlists }: Props) => {
+  const dispatch = useAppDispatch();
+  const [query, setQuery] = useState('');
+  const [addTrackToPlaylist] = useAddTrackToPlaylistMutation();
 
-  const handleToggleDropdown = () => {
-    setToggleDropdown(!toggleDropdown)
-  }
-
-  const handleClickOutside = (event: MouseEvent) => {
-    if (
-      dialogRef.current &&
-      !dialogRef.current.contains(event.target as Node)
-    ) {
-      setToggleDropdown(false)
-    }
-  }
-
-  useEffect(() => {
-    document.addEventListener("click", handleClickOutside, true)
-    return () => {
-      document.removeEventListener("click", handleClickOutside, true)
-    }
-  }, [])
+  const likedMusic = playlists.find(
+    (playlist) => playlist.title == 'Liked Music'
+  );
 
   const handleAddTrackToPlaylist = (id: string) => {
-    dispatch(addTrackToPlaylist(id, track))
-    setToggleDropdown(false)
-  }
+    addTrackToPlaylist({ playlist_id: id, track_id: track.id });
+  };
   const handleAddToQueue = () => {
-    dispatch(addToQueue(track))
-  }
-  const handleLikedSong = () => {
-    dispatch(addTrackToLikedMusic(track))
-    setToggleDropdown(false)
-  }
+    dispatch(addToQueue(track));
+  };
 
   return (
-    <div className="relative h-8 w-8">
-      <button
-        className="absolute right-0 inset-y-0"
-        onClick={handleToggleDropdown}
-      >
+    <Dropdown>
+      <DropdownTrigger className="flex items-center">
         <BsThreeDots size={32} />
-      </button>
-      {toggleDropdown && (
-        <>
-          <div
-            className="bg-neutral-800 absolute left-0 top-10 rounded text-base font-normal w-48 p-1"
-            ref={dialogRef}
-          >
-            <button
-              className="flex items-center gap-2 hover:bg-white/5 p-2 rounded-sm w-full justify-between group relative border-b border-white/5"
-              onClick={handleAddToQueue}
-            >
-              Add to queue
-            </button>
-            <button
-              className="flex items-center gap-2 hover:bg-white/5 p-2 rounded-sm w-full justify-between group relative"
-              onClick={handleLikedSong}
-            >
-              Save to Liked Music
-            </button>
-            <div className="flex items-center gap-2 hover:bg-white/5 p-2 rounded-sm w-full justify-between group relative">
-              Add to playlists <BsCaretRightFill />
-              <div className="bg-neutral-800 absolute left-full top-0 rounded text-base font-normal w-48 p-1 hidden group-hover:block hover:block">
-                <button
-                  className="flex items-center gap-2 hover:bg-white/5 p-2 rounded-sm w-full justify-between group relative"
-                  onClick={() => {}}
-                >
-                  Create playlist
-                </button>
-                {currentUserPlaylists
-                  .filter((playlist) => playlist.title != "Liked Music")
-                  .map((playlist, index) => (
-                    <button
-                      key={index}
-                      className={`flex items-center gap-2 hover:bg-white/5 p-2 rounded-sm w-full justify-between group relative border-white/5 ${
-                        index == 0 && "border-t"
-                      }`}
-                      onClick={() => handleAddTrackToPlaylist(playlist.id)}
-                    >
-                      {playlist.title}
-                    </button>
-                  ))}
-              </div>
+      </DropdownTrigger>
+      <DropdownContent rightSide>
+        <DropdownSubMenu menu="playlist">
+          <DropdownSubMenuTrigger>Add to playlist</DropdownSubMenuTrigger>
+          <DropdownSubMenuContent rightSide>
+            <div className="relative flex items-center p-0.5">
+              <input
+                type="text"
+                value={query}
+                className="w-full bg-neutral-800 p-2 pl-8 text-sm outline-none"
+                placeholder="Find your playlist"
+                onChange={(e) => setQuery(e.target.value)}
+              />
+              <BsSearch size={16} className="absolute left-2.5" />
             </div>
-          </div>
-        </>
-      )}
-    </div>
-  )
-}
+            <DropdownItem onClick={() => {}}>Create new playlist</DropdownItem>
+            <DropdownSeparator />
+            {playlists
+              .filter(
+                (p) =>
+                  p.title.toLowerCase().startsWith(query) &&
+                  p.title != 'Liked Music'
+              )
+              .map((playlist) => (
+                <DropdownItem
+                  onClick={() => handleAddTrackToPlaylist(playlist.id)}
+                >
+                  {playlist.title}
+                </DropdownItem>
+              ))}
+          </DropdownSubMenuContent>
+        </DropdownSubMenu>
+        <DropdownItem onClick={handleAddToQueue}>Add to queue</DropdownItem>
+        <DropdownItem onClick={() => handleAddTrackToPlaylist(likedMusic!.id)}>
+          Save to your Liked Musics
+        </DropdownItem>
+      </DropdownContent>
+    </Dropdown>
+  );
+};
 
-export default TrackDropdown
+export default TrackDropdown;

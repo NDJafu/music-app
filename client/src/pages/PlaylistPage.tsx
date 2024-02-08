@@ -4,12 +4,11 @@ import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { FullPlaylist, Track } from '../app/types';
 import { playEntirePlaylist } from '../features/player/playerSlice';
 import { BsClock, BsPauseFill, BsPlayFill } from 'react-icons/bs';
-import TrackInPlaylist from '../components/Playlist/PlaylistTracks';
 import PlaylistOptions from '../components/Playlist/PlaylistOptions';
 import { useGetPlaylistByIdQuery } from '../features/playlist/playlistApiSlice';
 import PlaylistDetail from '../components/Playlist/PlaylistDetails';
 import { DynamicBackground } from '../components/ui/DynamicBackground';
-import PlaylistTracks from '../components/Playlist/PlaylistTracks';
+import PlaylistTrackList from '../components/Playlist/PlaylistTrackList';
 
 const PlaylistPage = () => {
   const { id } = useParams();
@@ -75,12 +74,12 @@ const PlaylistPage = () => {
               <div className="my-4 flex items-center justify-between gap-4 border-b border-white/5 px-4 py-4 font-light text-linkwater/50">
                 <span>#</span>
                 <span className="flex-grow">Title</span>
-                <span className="mr-12">
+                <span className="mr-8">
                   <BsClock />
                 </span>
               </div>
             )}
-            <PlaylistTracks {...playlist} />
+            <PlaylistTrackList {...playlist} />
           </div>
         </div>
       </div>
