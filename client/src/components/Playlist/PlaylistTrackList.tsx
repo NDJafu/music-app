@@ -13,7 +13,7 @@ import {
 import { useRemoveTrackFromPlaylistMutation } from '../../features/playlist/playlistApiSlice';
 import { toast } from 'react-toastify';
 
-const PlaylistTracks = (playlist: FullPlaylist) => {
+const PlaylistTrackList = (playlist: FullPlaylist) => {
   const currentUser = useAppSelector((state) => state.auth.currentUser);
   const navigate = useNavigate();
   const [removeTrackFromPlaylist] = useRemoveTrackFromPlaylistMutation();
@@ -30,7 +30,10 @@ const PlaylistTracks = (playlist: FullPlaylist) => {
   return (
     <>
       {playlist.trackId.map((track, index) => (
-        <div className="flex items-center justify-between gap-4 rounded-md px-4 py-2 text-linkwater hover:bg-white/25">
+        <div
+          key={index}
+          className="group flex items-center justify-between gap-4 rounded-md px-4 py-2 text-linkwater hover:bg-white/25"
+        >
           <span className="w-3">{index + 1}</span>
           <div className="flex flex-grow items-center gap-4">
             <img
@@ -45,9 +48,11 @@ const PlaylistTracks = (playlist: FullPlaylist) => {
               <p className="text-xs opacity-50">{track.artist}</p>
             </div>
           </div>
-          <div className="mr-4 text-xs opacity-50">{duration(track)}</div>
+          <div className="mr-4 text-xs opacity-50 group-hover:mr-0">
+            {duration(track)}
+          </div>
           <Dropdown>
-            <DropdownTrigger className="flex items-center">
+            <DropdownTrigger className="hidden items-center group-hover:flex">
               <BsThreeDots />
             </DropdownTrigger>
             <DropdownContent className="mt-4">
@@ -71,4 +76,4 @@ const PlaylistTracks = (playlist: FullPlaylist) => {
   );
 };
 
-export default PlaylistTracks;
+export default PlaylistTrackList;
