@@ -7,12 +7,21 @@ import {
   ModalTrigger,
 } from '../ui/Modal';
 import { FullPlaylist } from '../../app/types';
+import { useDeletePlaylistMutation } from '../../features/playlist/playlistApiSlice';
+import { useNavigate } from 'react-router-dom';
 
 const DialogButtons = (playlist: FullPlaylist) => {
   const { toggleModal, showModal } = useContext(ModalContext);
+  const [deletePlaylist] = useDeletePlaylistMutation();
+  const navigate = useNavigate();
 
   function handleDeletePlaylist() {
-    
+    deletePlaylist(playlist.id)
+      .unwrap()
+      .then(() => {
+        toggleModal();
+        navigate('/');
+      });
   }
 
   return (
