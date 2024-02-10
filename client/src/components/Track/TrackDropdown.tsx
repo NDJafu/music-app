@@ -13,7 +13,10 @@ import {
   DropdownTrigger,
 } from '../ui/Dropdown';
 import { useState } from 'react';
-import { useAddTrackToPlaylistMutation } from '../../features/playlist/playlistApiSlice';
+import {
+  useAddTrackToPlaylistMutation,
+  useCreatePlaylistMutation,
+} from '../../features/playlist/playlistApiSlice';
 
 type Props = {
   track: Track;
@@ -24,6 +27,7 @@ const TrackDropdown = ({ track, playlists }: Props) => {
   const dispatch = useAppDispatch();
   const [query, setQuery] = useState('');
   const [addTrackToPlaylist] = useAddTrackToPlaylistMutation();
+  const [createPlaylist] = useCreatePlaylistMutation();
 
   const likedMusic = playlists.find(
     (playlist) => playlist.title == 'Liked Music'
@@ -34,6 +38,12 @@ const TrackDropdown = ({ track, playlists }: Props) => {
   };
   const handleAddToQueue = () => {
     dispatch(addToQueue(track));
+  };
+  const handleCreateNewPlaylistWithTrack = () => {
+    createPlaylist({
+      title: track.title,
+      trackId: [track.id],
+    });
   };
 
   return (
@@ -55,7 +65,9 @@ const TrackDropdown = ({ track, playlists }: Props) => {
               />
               <BsSearch size={16} className="absolute left-2.5" />
             </div>
-            <DropdownItem onClick={() => {}}>Create new playlist</DropdownItem>
+            <DropdownItem onClick={handleCreateNewPlaylistWithTrack}>
+              Create new playlist
+            </DropdownItem>
             <DropdownSeparator />
             {playlists
               .filter(
@@ -63,8 +75,9 @@ const TrackDropdown = ({ track, playlists }: Props) => {
                   p.title.toLowerCase().startsWith(query) &&
                   p.title != 'Liked Music'
               )
-              .map((playlist) => (
+              .map((playlist, index) => (
                 <DropdownItem
+                  key={index}
                   onClick={() => handleAddTrackToPlaylist(playlist.id)}
                 >
                   {playlist.title}
