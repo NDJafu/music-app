@@ -88,7 +88,7 @@ export function DropdownContent({
     return (
       <div
         {...props}
-        className={`absolute ${rightSide ? 'left-0' : 'right-0'} z-10 w-56 rounded bg-neutral-900 p-1 shadow-lg shadow-black/50 ${props.className}`}
+        className={`absolute mt-1 ${rightSide ? 'left-0' : 'right-0'} z-10 w-56 rounded bg-neutral-900 p-1 shadow-lg shadow-black/50 ${props.className}`}
         ref={dropdownRef}
       >
         {children}
@@ -114,7 +114,7 @@ export function DropdownItem({
       {...props}
       className={
         props.className ??
-        'w-full items-center gap-2 rounded-sm p-2 text-start hover:bg-white/5'
+        'flex w-full items-center justify-between gap-2 rounded-sm p-2 text-start text-base font-normal hover:bg-white/5'
       }
       onMouseOver={() => {
         if (!menu) setActiveSubMenu('');
