@@ -4,9 +4,9 @@ import { useAppSelector } from '../app/hooks';
 import { Track } from '../app/types';
 
 const QueuePage = () => {
-  const currentSong = useAppSelector((state) => state.player.currentSong);
   const queue = useAppSelector((state) => state.player.queue);
   const playerQueue = useAppSelector((state) => state.player.playerQueue);
+
   return (
     <div className="px-9 pt-20 text-linkwater">
       <h2 className="text-2xl font-bold">Queue</h2>

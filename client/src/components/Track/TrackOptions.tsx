@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { BsHeart, BsHeartFill, BsPauseFill, BsPlayFill } from 'react-icons/bs';
 import TrackDropdown from './TrackDropdown';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
@@ -13,9 +13,12 @@ import {
   useGetPlaylistByUserQuery,
   useRemoveTrackFromPlaylistMutation,
 } from '../../features/playlist/playlistApiSlice';
+import { toast } from 'react-toastify';
 
 const TrackOptions = (track: Track) => {
-  const { playing, currentSong } = useAppSelector((state) => state.player);
+  const { playing, playerQueue, queue } = useAppSelector(
+    (state) => state.player
+  );
   const currentUser = useAppSelector((state) => state.auth.currentUser);
   const { data: playlists } = useGetPlaylistByUserQuery(currentUser!.id, {
     skip: !currentUser,
@@ -23,6 +26,8 @@ const TrackOptions = (track: Track) => {
   const [removeTrackFromPlaylist] = useRemoveTrackFromPlaylistMutation();
   const [addTrackToPlaylist] = useAddTrackToPlaylistMutation();
   const dispatch = useAppDispatch();
+
+  const currentSong = useMemo(() => playerQueue[queue], [queue]);
 
   const handlePlaySong = () => {
     if (playing && track.id == currentSong?.id) {
@@ -40,16 +45,14 @@ const TrackOptions = (track: Track) => {
   const ifTrackIsLiked = likedMusic?.trackId.includes(track.id);
 
   const handleLikeTrack = () => {
+    const data = {
+      playlist_id: likedMusic!.id,
+      track_id: track.id,
+    };
     if (ifTrackIsLiked) {
-      removeTrackFromPlaylist({
-        playlist_id: likedMusic!.id,
-        track_id: track.id,
-      });
+      removeTrackFromPlaylist(data);
     } else {
-      addTrackToPlaylist({
-        playlist_id: likedMusic!.id,
-        track_id: track.id,
-      });
+      addTrackToPlaylist(data);
     }
   };
 
