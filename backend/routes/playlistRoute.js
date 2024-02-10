@@ -14,13 +14,14 @@ const {
 
 router.route("/all/:userid").get(getAllPlaylistOfAUser);
 
-router.route("/create").post(authenticateUser, createPlaylist);
+router.post("/create", authenticateUser, createPlaylist);
+
+router.delete("/delete/:id", authenticateUser, deletePlaylistById);
 
 router
   .route("/:id")
   .get(getPlaylistById)
-  .patch(authenticateUser, updatePlaylistById)
-  .delete(authenticateUser, deletePlaylistById);
+  .patch(authenticateUser, updatePlaylistById);
 
 router.post("/:id/add/:trackid", authenticateUser, addTrackToPlaylist);
 

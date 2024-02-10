@@ -3,7 +3,8 @@ const User = require("../models/User");
 const { checkPermissonToChangeInfo } = require("../utils/checkPermission");
 
 const createPlaylist = async (req, res) => {
-  req.body.userId = req.user.userId;
+  req.body.userId = req.user.id;
+  console.log(req.body);
   const playlist = await Playlist.create(req.body);
   res.status(201).json({ message: "Create Playlist Successfully", playlist });
 };
@@ -51,7 +52,7 @@ const deletePlaylistById = async (req, res) => {
 
 const addTrackToPlaylist = async (req, res) => {
   const { id, trackid } = req.params;
-  await Playlist.findByIdAndUpdate(
+  const playlist = await Playlist.findByIdAndUpdate(
     { _id: id },
     { $push: { trackId: trackid } },
     {
@@ -60,12 +61,12 @@ const addTrackToPlaylist = async (req, res) => {
     }
   );
 
-  res.status(200).json({ message: "Add track from playlist successfully" });
+  res.status(200).json({ message: `Song added to ${playlist.title}` });
 };
 
 const deleteTrackFromPlaylist = async (req, res) => {
   const { id, trackid } = req.params;
-  await Playlist.findByIdAndUpdate(
+  const playlist = await Playlist.findByIdAndUpdate(
     { _id: id },
     { $pull: { trackId: trackid } },
     {
@@ -74,7 +75,7 @@ const deleteTrackFromPlaylist = async (req, res) => {
     }
   );
 
-  res.status(200).json({ message: "Delete track from playlist successfully" });
+  res.status(200).json({ message: `Song removed from ${playlist.title}` });
 };
 
 const addTrackToLikedMusic = async (req, res) => {
