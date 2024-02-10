@@ -1,4 +1,5 @@
 import { apiSlice } from '../../app/apiSlice';
+import { store } from '../../app/store';
 import {
   FullPlaylist,
   Playlist,
@@ -13,7 +14,7 @@ export const playlistApiSlice = apiSlice.injectEndpoints({
       query: (id) => ({
         url: `/playlist/${id}`,
       }),
-      providesTags: ['Playlist'],
+      providesTags: (result) => [{ type: 'Playlist', id: 'VIEWED' }],
       transformResponse: (response: { message: string; playlist: any }) => {
         const { userId, _id, __v, trackId, ...rest } = response.playlist;
 
@@ -47,7 +48,6 @@ export const playlistApiSlice = apiSlice.injectEndpoints({
       query: (userId) => ({
         url: `/playlist/all/${userId}`,
       }),
-      providesTags: ['Playlist'],
       transformResponse: (response: { message: string; playlist: any[] }) => {
         const transformedData: SidebarPlaylist[] = response.playlist.map(
           (p) => {
@@ -68,6 +68,28 @@ export const playlistApiSlice = apiSlice.injectEndpoints({
         );
         return transformedData;
       },
+      providesTags: (result) =>
+        result
+          ? [
+              ...result.map(({ id }) => ({ type: 'Playlist' as const, id })),
+              { type: 'Playlist', id: 'LIST' },
+            ]
+          : [{ type: 'Playlist', id: 'LIST' }],
+    }),
+    createPlaylist: builder.mutation<void, Partial<SidebarPlaylist>>({
+      query: ({ title, trackId = [] }) => ({
+        url: `/playlist/create`,
+        method: 'POST',
+        body: { title, trackId },
+      }),
+      invalidatesTags: [{ type: 'Playlist', id: 'LIST' }],
+    }),
+    deletePlaylist: builder.mutation<void, string>({
+      query: (id) => ({
+        url: `/playlist/delete/${id}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: [{ type: 'Playlist', id: 'LIST' }],
     }),
     editPlaylist: builder.mutation<void, Partial<Playlist>>({
       query: ({ id, title, image }) => ({
@@ -85,7 +107,26 @@ export const playlistApiSlice = apiSlice.injectEndpoints({
         url: `/playlist/${playlist_id}/add/${track_id}`,
         method: 'POST',
       }),
-      invalidatesTags: ['Playlist'],
+      onQueryStarted: (
+        { playlist_id, track_id },
+        { dispatch, queryFulfilled }
+      ) => {
+        const userId = store.getState().auth.currentUser?.id;
+        const patchResult = dispatch(
+          playlistApiSlice.util.updateQueryData(
+            'getPlaylistByUser',
+            userId!,
+            (draft) => {
+              const index = draft.findIndex(({ id }) => id == playlist_id);
+              if (index !== -1) {
+                draft[index].trackId.push(track_id);
+              }
+            }
+          )
+        );
+        queryFulfilled.catch(patchResult.undo);
+      },
+      invalidatesTags: [{ type: 'Playlist', id: 'VIEWED' }],
     }),
     removeTrackFromPlaylist: builder.mutation<
       void,
@@ -95,7 +136,30 @@ export const playlistApiSlice = apiSlice.injectEndpoints({
         url: `/playlist/${playlist_id}/remove/${track_id}`,
         method: 'DELETE',
       }),
-      invalidatesTags: ['Playlist'],
+      onQueryStarted: (
+        { playlist_id, track_id },
+        { dispatch, queryFulfilled }
+      ) => {
+        const userId = store.getState().auth.currentUser?.id;
+        const patchResult = dispatch(
+          playlistApiSlice.util.updateQueryData(
+            'getPlaylistByUser',
+            userId!,
+            (draft) => {
+              const index = draft.findIndex(({ id }) => id == playlist_id);
+
+              if (index !== -1) {
+                const trackIndex = draft[index].trackId.findIndex(
+                  (id) => id == track_id
+                );
+                draft[index].trackId.splice(trackIndex, 1);
+              }
+            }
+          )
+        );
+        queryFulfilled.catch(patchResult.undo);
+      },
+      invalidatesTags: [{ type: 'Playlist', id: 'VIEWED' }],
     }),
   }),
 });
@@ -103,7 +167,9 @@ export const playlistApiSlice = apiSlice.injectEndpoints({
 export const {
   useGetPlaylistByIdQuery,
   useGetPlaylistByUserQuery,
+  useCreatePlaylistMutation,
   useEditPlaylistMutation,
+  useDeletePlaylistMutation,
   useAddTrackToPlaylistMutation,
   useRemoveTrackFromPlaylistMutation,
 } = playlistApiSlice;
