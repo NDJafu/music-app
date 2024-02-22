@@ -1,5 +1,3 @@
-import { BsPencil, BsThreeDots } from 'react-icons/bs';
-import ProfileBanner from '../components/Profile/ProfileBanner';
 import { useParams } from 'react-router-dom';
 import { useAppSelector } from '../app/hooks';
 import TrackCard from '../components/Track/TrackCard';
@@ -7,6 +5,7 @@ import { useGetTrackByUserQuery } from '../features/track/trackApiSlice';
 import { useGetUserQuery } from '../features/user/userApiSlice';
 import { DynamicBackground } from '../components/ui/DynamicBackground';
 import ProfileEditModal from '../components/Profile/ProfileEditModal';
+import ProfileOptions from '../components/Profile/ProfileOptions';
 
 const ProfilePage = () => {
   const { id } = useParams();
@@ -47,9 +46,7 @@ const ProfilePage = () => {
             className="absolute h-56 w-full opacity-50"
           />
           <div className="relative px-9 py-4">
-            <button className="my-6 flex items-center">
-              <BsThreeDots size={32} />
-            </button>
+            <ProfileOptions {...user} />
             <div className="my-2 flex flex-col gap-2">
               <h3 className="text-2xl font-semibold">
                 {currentUser?.id == id ? 'Your uploads' : 'Their uploads'}
