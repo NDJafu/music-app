@@ -1,5 +1,5 @@
-import { apiSlice } from "../../app/apiSlice"
-import { User } from "../../app/types"
+import { apiSlice } from '../../app/apiSlice';
+import { User } from '../../app/types';
 
 export const userApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
@@ -8,25 +8,25 @@ export const userApiSlice = apiSlice.injectEndpoints({
         url: `/user/${id}`,
       }),
       transformResponse: (response: { message: string; user: any }) => {
-        const { _id, likedMusic, image, ...rest } = response.user
+        const { _id, likedMusic, image, ...rest } = response.user;
         const transformedData: User = {
           id: _id,
           avatar: image,
           ...rest,
-        }
-        return transformedData
+        };
+        return transformedData;
       },
-      providesTags: ["User"],
+      providesTags: ['User'],
     }),
     editUser: builder.mutation<void, Partial<User & { image: string }>>({
       query: (user) => ({
         url: `/user/${user.id}`,
-        method: "PATCH",
+        method: 'PATCH',
         body: user,
       }),
-      invalidatesTags: ["User"],
+      invalidatesTags: ['User'],
     }),
   }),
-})
+});
 
-export const { useGetUserQuery, useEditUserMutation } = userApiSlice
+export const { useGetUserQuery, useEditUserMutation } = userApiSlice;

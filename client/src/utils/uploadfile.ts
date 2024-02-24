@@ -1,16 +1,16 @@
-import { api } from "./api"
+import { api } from './api';
 
 export const uploadFile = async (file: File) => {
   try {
-    const formData = new FormData()
-    formData.append("file", file)
-    const response = await api.post("/fileupload/file", formData, {
+    const formData = new FormData();
+    formData.append('file', file);
+    const response = await api.post('/fileupload/file', formData, {
       headers: {
-        "Content-Type": "multipart/form-data",
+        'Content-Type': 'multipart/form-data',
       },
-    })
-    return response.data
+    });
+    return response.data;
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
-}
+};
