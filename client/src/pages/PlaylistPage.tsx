@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { FullPlaylist, Track } from '../app/types';
+import { FullPlaylist } from '../app/types';
 import { playEntirePlaylist } from '../features/player/playerSlice';
 import { BsClock, BsPauseFill, BsPlayFill } from 'react-icons/bs';
 import PlaylistOptions from '../components/Playlist/PlaylistOptions';
@@ -13,8 +13,12 @@ import PlaylistTrackList from '../components/Playlist/PlaylistTrackList';
 const PlaylistPage = () => {
   const { id } = useParams();
   const dispatch = useAppDispatch();
-  const player = useAppSelector((state) => state.player);
+  const { playing, playerQueue, queue } = useAppSelector(
+    (state) => state.player
+  );
   const { data: playlist, isFetching } = useGetPlaylistByIdQuery(id!);
+
+  const currentSong = useMemo(() => playerQueue[queue], [queue]);
 
   // fetching user
 
@@ -60,7 +64,7 @@ const PlaylistPage = () => {
                 className="flex h-16 w-16 items-center justify-center rounded-full bg-jarcata-500 hover:brightness-105"
                 onClick={handlePlayPlaylist}
               >
-                {player.playing && playlist?.id == player.currentSong?.id ? (
+                {playing && playlist.trackId.includes(currentSong) ? (
                   <BsPauseFill size={42} />
                 ) : (
                   <BsPlayFill size={42} />
